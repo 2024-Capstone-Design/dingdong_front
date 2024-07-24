@@ -1,0 +1,17 @@
+{
+  "files": {
+    "main.css": "/static/css/main.e86f2bb7.css",
+    "main.js": "/static/js/main.c6217183.js",
+    "static/js/453.7b75abd7.chunk.js": "/static/js/453.7b75abd7.chunk.js",
+    "index.html": "/index.html",
+    "static/media/Pretendard-Medium.otf": "/static/media/Pretendard-Medium.31d6cfe0d16ae931b73c.otf",
+    "static/media/Pretendard-Regular.otf": "/static/media/Pretendard-Regular.31d6cfe0d16ae931b73c.otf",
+    "main.e86f2bb7.css.map": "/static/css/main.e86f2bb7.css.map",
+    "main.c6217183.js.map": "/static/js/main.c6217183.js.map",
+    "453.7b75abd7.chunk.js.map": "/static/js/453.7b75abd7.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.e86f2bb7.css",
+    "static/js/main.c6217183.js"
+  ]
+}

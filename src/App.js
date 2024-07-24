@@ -1,17 +1,13 @@
+import { Routes, Route, useNavigationType, useLocation } from "react-router-dom";
 import { useEffect } from "react";
-import {
-  Routes,
-  Route,
-  useNavigationType,
-  useLocation,
-} from "react-router-dom";
-
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import TeacherSignup from "./pages/TeacherSignup";
 import StudentMain from "./pages/StudentMain";
 import ChatRoom from "./pages/ChatRoom";
+import Sketch from "./pages/Sketch";
+import SketchResult from "./pages/SketchResult"; // Import SketchResult page
 
 function App() {
   const action = useNavigationType();
@@ -53,6 +49,14 @@ function App() {
         title = "Chat Room";
         metaDescription = "Chat room page";
         break;
+      case "/sketch":
+        title = "Sketch";
+        metaDescription = "Draw and create sketches";
+        break;
+      case "/sketch-result":
+        title = "Sketch Result";
+        metaDescription = "View sketch result";
+        break;
     }
 
     if (title) {
@@ -60,9 +64,7 @@ function App() {
     }
 
     if (metaDescription) {
-      const metaDescriptionTag = document.querySelector(
-        'head > meta[name="description"]',
-      );
+      const metaDescriptionTag = document.querySelector('head > meta[name="description"]');
       if (metaDescriptionTag) {
         metaDescriptionTag.content = metaDescription;
       }
@@ -77,6 +79,8 @@ function App() {
       <Route path="/teacher-signup" element={<TeacherSignup />} />
       <Route path="/student-main" element={<StudentMain />} />
       <Route path="/chat-room" element={<ChatRoom />} />
+      <Route path="/sketch" element={<Sketch />} />
+      <Route path="/sketch-result" element={<SketchResult />} /> {/* Add sketch-result route */}
     </Routes>
   );
 }

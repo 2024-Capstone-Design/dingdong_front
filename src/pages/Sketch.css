@@ -1,0 +1,52 @@
+/* src/pages/Sketch.css */
+.sketch-container {
+    background-color: #F7F3FD;
+    padding: 20px;
+    text-align: center;
+  }
+  
+  .sketch-canvas {
+    background-color: #FFFFFF;
+    border: 1px solid #000000;
+    margin-top: 20px; /* Added margin-top for space between controls and canvas */
+    cursor: crosshair;
+  }
+  
+  .controls {
+    margin-top: 20px;
+  }
+  
+  #colorPicker,
+  #lineWidth {
+    margin-right: 10px;
+  }
+  
+  .color-palette {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+  }
+  
+  .color-swatch {
+    width: 30px;
+    height: 30px;
+    margin: 0 5px;
+    cursor: pointer;
+    border: 1px solid #000;
+    border-radius: 50%; /* Makes the color swatches circular */
+  }
+  
+  .control-button {
+    background-color: #9D3FE7;
+    color: #FFFFFF;
+    border: none;
+    padding: 10px 20px;
+    margin: 0 5px;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  .control-button:hover {
+    background-color: #8427b9;
+  }
+  
