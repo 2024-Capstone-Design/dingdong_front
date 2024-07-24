@@ -11,10 +11,12 @@ const SketchResult = () => {
   const [completed, setCompleted] = useState(false);
   const [error, setError] = useState(false);
 
+  var stID = 55;
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('/api/mj/task/studentTaskId/50');
+        const response = await fetch('/api/mj/task/studentTaskId/55');
         const data = await response.json();
         setCharacters(data.characters);
         setCompleted(data.completed);

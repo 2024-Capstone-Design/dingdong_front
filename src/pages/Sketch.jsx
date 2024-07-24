@@ -16,6 +16,7 @@ const Sketch = () => {
   const [script, setScript] = useState([]);
 
   const chatid = '66a0b8ffad6cbd25943e0747';
+  var stID = 55;
   var item = null;
   var charac = null;
 
@@ -118,9 +119,9 @@ const Sketch = () => {
       {Object.keys(script).map(key => {
         item = script[key];
         if (key === 'created_at' || key === 'id') return null;
-        console.log("여기", item['1']['인물'][0]['인물이름']);
+        console.log("여기", item['1']['인물'][0]['이름']);
         charac = item['1']['인물'].map((person, index) => ({
-          name: person['인물이름'],
+          name: person['이름'],
           main: index === 0,
           prompt: person['프롬프트']
         }));
@@ -139,7 +140,7 @@ const Sketch = () => {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          studentTaskId: 50,
+          studentTaskId: stID,
           sketchImage: url,
           characters: charac
         })

@@ -14,7 +14,7 @@ const LeftBar = ({ className = "", finishChat }) => {
 
   return (
     <div
-      className={`w-[279px] rounded-tl-none rounded-tr-11xl rounded-br-11xl rounded-bl-none bg-grayscale-white flex flex-col items-start justify-start pt-[51px] pb-[69px] pr-5 pl-7 box-border gap-[109.1px] z-[1] text-left text-3xl-7 text-mediumslateblue-100 font-ubuntu mq450:gap-[55px] mq450:pt-[21px] mq450:pb-[29px] mq450:box-border mq1125:pt-[33px] mq1125:pb-[45px] mq1125:box-border ${className}`}
+      className={`w-[279px] rounded-tl-none rounded-tr-11xl rounded-br-11xl rounded-bl-none bg-grayscale-white flex flex-col items-start justify-start pt-[51px] pb-[69px] pr-5 pl-7 box-border gap-[60.1px] z-[1] text-left text-3xl-7 text-mediumslateblue-100 font-ubuntu mq450:gap-[55px] mq450:pt-[21px] mq450:pb-[29px] mq450:box-border mq1125:pt-[33px] mq1125:pb-[45px] mq1125:box-border ${className}`}
     >
       <div className="w-[279px] h-[1024px] relative rounded-tl-none rounded-tr-11xl rounded-br-11xl rounded-bl-none bg-grayscale-white hidden" />
       <div className="flex flex-row items-start justify-start py-0 px-[31px]">
@@ -32,7 +32,7 @@ const LeftBar = ({ className = "", finishChat }) => {
           </div>
         </div>
       </div>
-      <div className="self-stretch flex flex-col items-start justify-start pt-0 px-0 pb-[83.9px] gap-[78px] text-13xl text-black font-base-body mq800:pb-[55px] mq800:box-border">
+      <div className="self-stretch flex flex-col items-start justify-start pt-0 px-0 pb-[60px] gap-[78px] text-13xl text-black font-base-body mq800:pb-[55px] mq800:box-border">
         <h2 className="m-0 w-[223px] relative text-inherit font-semibold font-inherit flex items-center z-[2] mq450:text-lgi mq800:text-7xl">
           <span className="w-full">
             <p className="m-0">{`${title}`}</p>
