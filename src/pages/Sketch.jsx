@@ -15,7 +15,7 @@ const Sketch = () => {
   const [isErasing, setIsErasing] = useState(false);
   const [script, setScript] = useState([]);
 
-  const chatid = '664774eb7f54ea1498fe09e5';
+  const chatid = '66a0b8ffad6cbd25943e0747';
   var item = null;
   var charac = null;
 
@@ -95,7 +95,7 @@ const Sketch = () => {
         }));
         console.log("캐릭터", charac);
     })}
-    
+
       const storageRef = ref(storage, `sketches/${new Date().toISOString()}.png`);
       await uploadBytes(storageRef, blob);
       const url = await getDownloadURL(storageRef);

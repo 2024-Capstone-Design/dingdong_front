@@ -13,7 +13,7 @@ const ChatRoom = ({ chatroomId }) => {
   const messagesEndRef = useRef(null);
   const navigate = useNavigate(); // useNavigate 훅 사용
 
-  var chatid = '664774eb7f54ea1498fe09e5';
+  var chatid = '66a0b8ffad6cbd25943e0747';
   var fairyId = 4;
 
   useEffect(() => {
