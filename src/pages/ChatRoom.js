@@ -1,6 +1,6 @@
-// ChatRoom.js
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; // useNavigate 훅을 import
 import LeftBar from "../components/LeftBar";
 import { API_BASE_URL, FAST_API_BASE_URL } from '../config';
 import './ChatRoom.css'; // CSS 파일을 import
@@ -9,9 +9,12 @@ const ChatRoom = ({ chatroomId }) => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const [loading, setLoading] = useState(false); // 로딩 상태 추가
+  const [isFinished, setIsFinished] = useState(false); // 채팅 완료 여부 상태 추가
   const messagesEndRef = useRef(null);
+  const navigate = useNavigate(); // useNavigate 훅 사용
 
-  var chatid = '664774eb7f54ea1498fe09e6'
+  var chatid = '664774eb7f54ea1498fe09e5';
+  var fairyId = 4;
 
   useEffect(() => {
     const fetchMessages = async () => {
@@ -20,7 +23,7 @@ const ChatRoom = ({ chatroomId }) => {
         const response = await axios.get(`${API_BASE_URL}/v1/chatroom/${chatid}`);
         const chat = response.data.chat;
 
-        if(chat.length > 0){
+        if (chat.length > 0) {
           const transformedMessages = chat.map(element => {
             const sender = Object.keys(element)[0] === "BOT" ? "bot" : "user";
             return { sender, text: element[Object.keys(element)[0]] };
@@ -29,10 +32,10 @@ const ChatRoom = ({ chatroomId }) => {
         } else {
           try {
             setLoading(true); // 로딩 상태 설정
-            setMessages((prevMessages) => [...prevMessages, { sender: "bot", text: <LoadingDots /> }]); // 로딩 메시지 추가
+            setMessages((prevMessages) => [...prevMessages, { sender: "bot", text: <StartLoadingDots /> }]); // 로딩 메시지 추가
             const response = await axios.post(`${FAST_API_BASE_URL}/v1/gpt`, {
               is_first: true,
-              fairy_id: 4,
+              fairy_id: fairyId,
               chat_room_id: chatid,
               user_msg: '',
               q_type: "주인공 성격바꾸기",
@@ -61,57 +64,74 @@ const ChatRoom = ({ chatroomId }) => {
   }, [messages]);
 
   const handleSendMessage = async () => {
-    if (newMessage.trim()) {
-      try {
-        setMessages((prevMessages) => [...prevMessages, { sender: "user", text: newMessage }]);
-        setNewMessage("");
-        setLoading(true); // 로딩 상태 설정
-        setMessages((prevMessages) => [...prevMessages, { sender: "bot", text: <LoadingDots /> }]); // 로딩 메시지 추가
-
-        const response = await axios.post(`${FAST_API_BASE_URL}/v1/gpt`, {
-          is_first: false,
-          fairy_id: 4,
-          chat_room_id: chatid,
-          user_msg: newMessage,
-          q_type: "주인공 성격바꾸기",
-        });
-
-        // 로딩 메시지를 실제 응답으로 교체
-        setMessages((prevMessages) => {
-          const updatedMessages = [...prevMessages];
-          updatedMessages[updatedMessages.length - 1] = { sender: "bot", text: response.data.question };
-          return updatedMessages;
-        });
-      } catch (error) {
-        console.error("Failed to send message:", error);
-        alert("잠시 후에 다시 시도해주세요");
-      } finally {
-        setLoading(false); // 로딩 상태 해제
+    if(!loading){
+      if (newMessage.trim()) {
+        try {
+          setMessages((prevMessages) => [...prevMessages, { sender: "user", text: newMessage }]);
+          setNewMessage("");
+          setLoading(true); // 로딩 상태 설정
+          setMessages((prevMessages) => [...prevMessages, { sender: "bot", text: <LoadingDots /> }]); // 로딩 메시지 추가
+  
+          const response = await axios.post(`${FAST_API_BASE_URL}/v1/gpt`, {
+            is_first: false,
+            fairy_id: fairyId,
+            chat_room_id: chatid,
+            user_msg: newMessage,
+            q_type: "주인공 성격바꾸기",
+          });
+  
+          // 로딩 메시지를 실제 응답으로 교체
+          setMessages((prevMessages) => {
+            const updatedMessages = [...prevMessages];
+            updatedMessages[updatedMessages.length - 1] = { sender: "bot", text: response.data.question };
+            return updatedMessages;
+          });
+        } catch (error) {
+          console.error("Failed to send message:", error);
+          alert("잠시 후에 다시 시도해주세요");
+        } finally {
+          setLoading(false); // 로딩 상태 해제
+        }
+      } else {
+        console.log("Message is empty. Please enter a message.");
+        alert("메시지를 입력해주세요");
       }
-    } else {
-      console.log("Message is empty. Please enter a message.");
-      alert("메시지를 입력해주세요");
     }
   };
 
   const finishChat = async () => {
-    try {
-      const response = await axios.post(`${FAST_API_BASE_URL}/v1/gpt/summary`, {
-        fairy_id: 1,
-        chat_room_id: "664774eb7f54ea1498fe09e5",
-        q_type: "주인공 성격바꾸기",
-      });
-
-      setMessages((prevMessages) => [...prevMessages, { sender: "bot", text: response.data.question }]);
-      setNewMessage("");
-
-      const script = await axios.post(`${FAST_API_BASE_URL}/v1/gpt/coding`, {
-        fairy_id: 1,
-        chat_room_id: "664774eb7f54ea1498fe09e5",
-        q_type: "주인공 성격바꾸기",
-      });
-    } catch (error) {
-      console.error("Failed to send message:", error);
+    if(!loading){
+      if (isFinished) {
+        navigate('/scatch'); // 이미 완료된 상태라면 '/scatch'로 이동
+        return;
+      }
+      try {
+        setLoading(true); // 로딩 상태 설정
+        setMessages((prevMessages) => [...prevMessages, { sender: "bot", text: <FinishLoadingDots /> }]); // 로딩 메시지 추가
+        const response = await axios.post(`${FAST_API_BASE_URL}/v1/gpt/summary`, {
+          fairy_id: fairyId,
+          chat_room_id: chatid,
+          q_type: "주인공 성격바꾸기",
+        });
+  
+        setMessages((prevMessages) => {
+          const updatedMessages = [...prevMessages];
+          updatedMessages[updatedMessages.length - 1] = { sender: "bot", text: response.data.summary };
+          return updatedMessages;
+        });
+  
+        const script = await axios.post(`${FAST_API_BASE_URL}/v1/gpt/coding`, {
+          fairy_id: fairyId,
+          chat_room_id: chatid,
+          q_type: "주인공 성격바꾸기",
+        });
+  
+        setIsFinished(true); // 채팅 완료 상태 설정
+      } catch (error) {
+        console.error("Failed to send message:", error);
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
@@ -165,6 +185,25 @@ const ChatRoom = ({ chatroomId }) => {
 
 const LoadingDots = () => (
   <div className="loading-dots">
+    <span>생각하는 중</span>
+    <span>.</span>
+    <span>.</span>
+    <span>.</span>
+  </div>
+);
+
+const StartLoadingDots = () => (
+  <div className="loading-dots">
+    <span>책 읽는 중</span>
+    <span>.</span>
+    <span>.</span>
+    <span>.</span>
+  </div>
+);
+
+const FinishLoadingDots = () => (
+  <div className="loading-dots">
+    <span>정리하는 중</span>
     <span>.</span>
     <span>.</span>
     <span>.</span>
