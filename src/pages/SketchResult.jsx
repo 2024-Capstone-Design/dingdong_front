@@ -1,13 +1,15 @@
 // src/pages/SketchResult.jsx
 import React, { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import './SketchResult.css';
 
 const SketchResult = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const sketchUrl = location.state?.sketchUrl;
   const [characters, setCharacters] = useState({});
   const [completed, setCompleted] = useState(false);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -16,16 +18,41 @@ const SketchResult = () => {
         const data = await response.json();
         setCharacters(data.characters);
         setCompleted(data.completed);
+
+        // Check for any character with status failed
+        const hasError = Object.values(data.characters).some(
+          (character) => character.status === 'failed'
+        );
+        if (hasError) {
+          setError(true);
+          setCompleted(true); // Stop fetching data if there's an error
+        }
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     };
 
     fetchData();
-    const interval = setInterval(fetchData, 3000);
+    if (!completed) {
+      const interval = setInterval(fetchData, 3000);
+      return () => clearInterval(interval);
+    }
+  }, [completed]);
 
-    return () => clearInterval(interval);
-  }, []);
+  const handleRetry = () => {
+    navigate('/sketch');
+  };
+
+  if (error) {
+    return (
+      <div className="sketch-result-container">
+        <div className="error-message">
+          적합하지 않은 그림이에요. 다시 그려주세요.
+        </div>
+        <button onClick={handleRetry}>이전으로 돌아가기</button>
+      </div>
+    );
+  }
 
   return (
     <div className="sketch-result-container">
