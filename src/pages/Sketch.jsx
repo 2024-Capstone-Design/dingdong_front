@@ -1,5 +1,6 @@
 // src/pages/Sketch.jsx
 import React, { useRef, useState, useEffect } from "react";
+import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 import "./Sketch.css";
 import { storage } from "../firebase";
@@ -12,6 +13,27 @@ const Sketch = () => {
   const [color, setColor] = useState("#000000");
   const [lineWidth, setLineWidth] = useState(5);
   const [isErasing, setIsErasing] = useState(false);
+  const [script, setScript] = useState([]);
+
+  const chatid = '664774eb7f54ea1498fe09e5';
+  var item = null;
+  var charac = null;
+
+  useEffect(() => {
+      const fetchMessages = async () => {
+          try {
+              setScript([]);
+              const response = await axios.get(`http://127.0.0.1:8000/v1/script/${chatid}`);
+              setScript(response.data.coding);
+              console.log("불러옴", response.data.coding);
+
+          } catch (error) {
+              console.error("Failed to fetch messages:", error);
+          }
+      };
+      fetchMessages();
+  }, []);
+
   const navigate = useNavigate();
 
   const startDrawing = ({ nativeEvent }) => {
@@ -59,7 +81,21 @@ const Sketch = () => {
     // 기존 캔버스의 내용 그리기
     tempContext.drawImage(canvas, 0, 0);
 
+  
+
     tempCanvas.toBlob(async (blob) => {
+      {Object.keys(script).map(key => {
+        item = script[key];
+        if (key === 'created_at' || key === 'id') return null;
+        console.log("여기", item['1']['인물'][0]['인물이름']);
+        charac = item['1']['인물'].map((person, index) => ({
+          name: person['인물이름'],
+          main: index === 0,
+          prompt: person['프롬프트']
+        }));
+        console.log("캐릭터", charac);
+    })}
+    
       const storageRef = ref(storage, `sketches/${new Date().toISOString()}.png`);
       await uploadBytes(storageRef, blob);
       const url = await getDownloadURL(storageRef);
@@ -74,23 +110,7 @@ const Sketch = () => {
         body: JSON.stringify({
           studentTaskId: 50,
           sketchImage: url,
-          characters: [
-            {
-              name: "백설공주",
-              main: true,
-              prompt: "A young woman with fair skin, rosy cheeks, and red lips. She has black, bobbed hair with a slight wave, adorned with a red bow. She wears a traditional medieval dress with a blue bodice, puffed sleeves, a high white collar, and a yellow skirt. She has a gentle and kind expression, often surrounded by woodland animals like birds and deer."
-            },
-            {
-              name: "왕비",
-              main: false,
-              prompt: "A tall, regal woman with a strikingly beautiful yet sinister appearance. She has pale skin, sharp features, and arched eyebrows. Her hair is hidden under a high, black, and purple headdress adorned with a gold crown. She wears a long, flowing black robe with purple and red accents, a high collar, and a long red cape. Her expression is cold and calculating."
-            },
-            {
-              name: "왕자",
-              main: false,
-              prompt: "A handsome young man with a noble bearing. He has fair skin, wavy brown hair, and a charming smile. He is dressed in a medieval prince outfit with a white tunic, blue and gold doublet, brown trousers, and knee-high brown boots. He often carries a sword at his side and rides a white horse."
-            }
-          ]
+          characters: charac
         })
       });
 
