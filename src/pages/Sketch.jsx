@@ -55,6 +55,37 @@ const Sketch = () => {
     contextRef.current.stroke();
   };
 
+  const handleTouchStart = (e) => {
+    e.preventDefault();
+    const touch = e.touches[0];
+    const { offsetX, offsetY } = getTouchPos(touch);
+    contextRef.current.beginPath();
+    contextRef.current.moveTo(offsetX, offsetY);
+    setIsDrawing(true);
+  };
+
+  const handleTouchMove = (e) => {
+    if (!isDrawing) return;
+    e.preventDefault();
+    const touch = e.touches[0];
+    const { offsetX, offsetY } = getTouchPos(touch);
+    contextRef.current.lineTo(offsetX, offsetY);
+    contextRef.current.stroke();
+  };
+
+  const handleTouchEnd = () => {
+    contextRef.current.closePath();
+    setIsDrawing(false);
+  };
+
+  const getTouchPos = (touch) => {
+    const rect = canvasRef.current.getBoundingClientRect();
+    return {
+      offsetX: touch.clientX - rect.left,
+      offsetY: touch.clientY - rect.top
+    };
+  };
+
   const clearCanvas = () => {
     contextRef.current.clearRect(
       0,
@@ -149,9 +180,14 @@ const Sketch = () => {
   useEffect(() => {
     const canvas = canvasRef.current;
     canvas.width = window.innerWidth * 0.8;
-    canvas.height = window.innerHeight * 0.8;
+    canvas.height = window.innerHeight * 0.6;
     canvas.style.width = `${canvas.width}px`;
     canvas.style.height = `${canvas.height}px`;
+    document.body.style.overflow = 'hidden';
+    document.body.style.position = 'fixed';
+    document.body.style.width = '100%';
+    document.body.style.height = '100%';
+  
 
     const context = canvas.getContext("2d");
     context.lineCap = "round";
@@ -160,6 +196,14 @@ const Sketch = () => {
     // 초기 설정
     contextRef.current.strokeStyle = color;
     contextRef.current.lineWidth = lineWidth;
+
+    return () => {
+      // 컴포넌트 언마운트 시 스타일 제거
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
+      document.body.style.height = '';
+    };
   }, []);
 
   const colors = ["#000000", "#FF0000", "#00FF00", "#0000FF", "#FFFF00", "#FFA500", "#800080"];
@@ -205,6 +249,9 @@ const Sketch = () => {
         onMouseDown={startDrawing}
         onMouseUp={finishDrawing}
         onMouseMove={draw}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
         className="sketch-canvas"
       />
     </div>
