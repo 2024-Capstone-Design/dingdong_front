@@ -6,7 +6,7 @@ const MasterPrimaryButton = ({
   showLineRoundedArrowRight,
   propFlex,
   propMinWidth,
-  onMasterPrimaryButtonClick,
+  onStartBtnClick,
 }) => {
   const masterPrimaryButtonStyle = useMemo(() => {
     return {
@@ -18,7 +18,7 @@ const MasterPrimaryButton = ({
   return (
     <button
       className={`cursor-pointer [border:none] py-6 px-9 bg-neutral-colors-headings-black flex-1 rounded-21xl flex flex-row items-center justify-start box-border gap-[7px] min-w-[120px] ${className}`}
-      onClick={onMasterPrimaryButtonClick}
+      onClick={onStartBtnClick}
       style={masterPrimaryButtonStyle}
     >
       <img
@@ -50,7 +50,7 @@ MasterPrimaryButton.propTypes = {
   propMinWidth: PropTypes.any,
 
   /** Action props */
-  onMasterPrimaryButtonClick: PropTypes.func,
+  onStartBtnClick: PropTypes.func,
 };
 
 export default MasterPrimaryButton;

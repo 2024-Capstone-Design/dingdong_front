@@ -1,54 +1,21 @@
-import { useCallback } from "react";
-import { useNavigate } from "react-router-dom";
+
 import Header from "../components/Header";
 import Content from "../components/Content";
-import FrameComponent from "../components/FrameComponent";
-import Wrapper1 from "../components/Wrapper1";
+import FeatureDescription from "../components/FeatureDescription";
+import ServiceReview from "../components/ServiceReview";
 import CallToActionV from "../components/CallToActionV";
-import Wrapper from "../components/Wrapper";
+import Footer from "../components/Footer";
+
 
 const Frame = () => {
-  const navigate = useNavigate();
-
-  const onLogoContainerClick = useCallback(() => {
-    navigate("/");
-  }, [navigate]);
-
-  const onAboutTextClick = useCallback(() => {
-    // Please sync "서비스 소개" to the project
-  }, []);
-
-  const onNoticeTextClick = useCallback(() => {
-    // Please sync "공지사항" to the project
-  }, []);
-
-  const onFAQTextClick = useCallback(() => {
-    // Please sync "FAQ" to the project
-  }, []);
-
-  const onMasterSecondaryButtonClick = useCallback(() => {
-    navigate("/login");
-  }, [navigate]);
-
-  const onMasterPrimaryButtonClick = useCallback(() => {
-    navigate("/teacher-signup");
-  }, [navigate]);
-
   return (
     <div className="w-full relative bg-grayscale-white overflow-hidden flex flex-col items-end justify-start leading-[normal] tracking-[normal]">
-      <Header
-        onLogoContainerClick={onLogoContainerClick}
-        onAboutTextClick={onAboutTextClick}
-        onNoticeTextClick={onNoticeTextClick}
-        onFAQTextClick={onFAQTextClick}
-        onMasterSecondaryButtonClick={onMasterSecondaryButtonClick}
-        onMasterPrimaryButtonClick={onMasterPrimaryButtonClick}
-      />
+      <Header/>
       <Content />
-      <FrameComponent />
-      <Wrapper1 />
+      <FeatureDescription />
+      <ServiceReview />
       <CallToActionV />
-      <Wrapper />
+      <Footer />
     </div>
   );
 };

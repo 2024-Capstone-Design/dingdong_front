@@ -7,19 +7,10 @@ const AddCharacter = ({ className = "" }) => {
     >
       <div className="h-[126px] w-[1027px] relative rounded-2xl bg-grayscale-white box-border hidden max-w-full border-[1px] border-solid border-silver-100" />
       <button className="cursor-pointer [border:none] py-3 px-8 bg-lavender rounded-2xl flex flex-row items-start justify-start gap-[8px] z-[3]">
-        <img
-          className="h-[18px] w-[18px] relative overflow-hidden shrink-0 hidden"
-          alt=""
-          src="/icon-button2.svg"
-        />
+        
         <b className="w-[50px] relative text-lg leading-[24px] font-bold font-base-body text-corporate-purple text-center inline-block min-w-[50px]">
           보내기
         </b>
-        <img
-          className="h-[18px] w-[18px] relative overflow-hidden shrink-0 hidden"
-          alt=""
-          src="/icon-button2.svg"
-        />
       </button>
     </div>
   );

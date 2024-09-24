@@ -6,11 +6,11 @@ import PropTypes from "prop-types";
 const CallToActionV = ({ className = "" }) => {
   const navigate = useNavigate();
 
-  const onMasterPrimaryButtonClick = useCallback(() => {
-    navigate("/teacher-signup");
+  const onStartBtnClick = useCallback(() => {
+    navigate("/signup");
   }, [navigate]);
 
-  const onMasterSecondaryButtonClick = useCallback(() => {
+  const onLoginBtnClick = useCallback(() => {
     navigate("/login");
   }, [navigate]);
 
@@ -104,11 +104,11 @@ const CallToActionV = ({ className = "" }) => {
                 showLineRoundedArrowRight={false}
                 propFlex="unset"
                 propMinWidth="unset"
-                onMasterPrimaryButtonClick={onMasterPrimaryButtonClick}
+                onStartBtnClick={onStartBtnClick}
               />
               <button
                 className="cursor-pointer py-[22px] pr-[33px] pl-[35px] bg-[transparent] w-[116px] [filter:drop-shadow(0px_4px_10px_rgba(20,_20,_43,_0.04))] rounded-[36.55px] box-border flex flex-row items-start justify-start gap-[8px] z-[1] border-[1.5px] border-solid border-neutral-colors-headings-black"
-                onClick={onMasterSecondaryButtonClick}
+                onClick={onLoginBtnClick}
               >
                 <img
                   className="h-[18px] w-[18px] relative overflow-hidden shrink-0 hidden min-h-[18px]"

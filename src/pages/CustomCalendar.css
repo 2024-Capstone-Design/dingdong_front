@@ -1,0 +1,28 @@
+/* CustomCalendar.css */
+.react-calendar {
+    border: none; /* Remove calendar border */
+  }
+  
+  .react-calendar__tile {
+    height: 32px; /* Set tile height */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px; /* Change font size */
+    position: relative;
+    z-index: 2;
+  }
+  
+  .react-calendar__tile--active {
+    background: none;
+  }
+  
+  .react-calendar__tile .dot {
+    position: absolute;
+    /* bottom: 10px; */
+    width: 30px;
+    height: 30px;
+    background-color: rgba(255, 0, 0, 0.312);
+    border-radius: 50%;
+  }
+  

@@ -1,27 +1,134 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom'; // useNavigate 훅을 import
+import { useNavigate, useParams } from 'react-router-dom';
 import LeftBar from "../components/LeftBar";
-import { API_BASE_URL, FAST_API_BASE_URL } from '../config';
-import './ChatRoom.css'; // CSS 파일을 import
+import { FAST_API_BASE_URL } from '../config';
+import { studentTaskStore } from "../stores/StudentTaskStore";
+import { userStore } from "../stores/UserStore";
+import './ChatRoom.css';
+import { api } from "../api/index";
 
-const ChatRoom = ({ chatroomId }) => {
+const ChatRoom = () => {
+  const user = userStore.getUser();
+
+  const { studentTaskId } = useParams();  // useParams를 사용해 studentTaskId를 가져옴
+  var task = studentTaskStore.getTasks().find(task => task.studentTaskId === parseInt(studentTaskId));
+
+  const [chatroomId, setChatroomId] = useState(null);  // chatroomId를 상태로 관리
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
-  const [loading, setLoading] = useState(false); // 로딩 상태 추가
-  const [isFinished, setIsFinished] = useState(false); // 채팅 완료 여부 상태 추가
+  const [loading, setLoading] = useState(false);  // 로딩 상태 관리
+  const [isFinished, setIsFinished] = useState(false);
+  const [words, setWords] = useState([]);
+  const [filteredWords, setFilteredWords] = useState([]); // 자동완성 추천 단어 목록
   const messagesEndRef = useRef(null);
-  const navigate = useNavigate(); // useNavigate 훅 사용
+  const navigate = useNavigate();
+  const inputRef = useRef(null);
 
-  var chatid = '66a0b8ffad6cbd25943e0747';
-  var fairyId = 4;
+  const Autocomplete = ({ suggestions, onSuggestionClick }) => {
+    return (
+      <div className="flex flex-wrap gap-2 mb-2">
+        {suggestions.map((word, index) => (
+          <span key={index} className="bg-blue-200 text-blue-800 px-3 py-1 rounded-full font-bold text-xl cursor-pointer"
+          onClick={() => onSuggestionClick(word)}>
+            {word}
+          </span>
+        ))}
+      </div>
+      );
+    };
+
+  // Handle suggestion click
+  const handleInputChange = (e) => {
+    setNewMessage(e.target.value);
+  };
+
+  const handleSuggestionClick = (suggestion) => {
+    const inputWords = newMessage.split(' ');
+    const lastWordIndex = inputWords.length - 1;
+    const lastWord = inputWords[lastWordIndex];
+    const lastWordStart = newMessage.lastIndexOf(lastWord);
+    
+    const updatedMessage = newMessage.slice(0, lastWordStart) + suggestion;
+    setNewMessage(updatedMessage);
+    setFilteredWords([]);
+  
+    // 커서 위치 설정을 위해 setTimeout 사용
+    setTimeout(() => {
+      if (inputRef.current) {
+        inputRef.current.focus();
+        inputRef.current.setSelectionRange(updatedMessage.length, updatedMessage.length);
+      }
+    }, 0);
+  };
+  
+  // 추천단어 코드
+  useEffect(() => {
+    // 입력값이 변경될 때마다 필터링된 단어 목록 업데이트
+    const updateFilteredWords = () => {
+      const inputWords = newMessage.split(' ');
+      const lastWord = inputWords[inputWords.length - 1].toLowerCase();
+      
+      if(lastWord.length > 0){
+        const filtered = words.filter(word => 
+          word.toLowerCase().includes(lastWord) && word.toLowerCase() != lastWord
+        );
+        setFilteredWords(filtered);
+      }
+      if(newMessage.length == 0){
+        setFilteredWords([]);
+      }
+    };
+
+    updateFilteredWords();
+  }, [newMessage, words]);
 
   useEffect(() => {
+    if (!task) {
+      return;
+    }
+
+    const fetchChatroomId = async () => {
+      try {
+        setLoading(true);  // 로딩 시작
+        const response = await axios.get(`${FAST_API_BASE_URL}/chat/v1/room/${studentTaskId}`);
+        setChatroomId(response.data.chatroomId);  // 가져온 chatroomId를 상태에 저장
+      } catch (error) {
+        console.error("Failed to fetch chatroomId:", error);
+      } finally {
+        setLoading(false);  // 로딩 종료
+      }
+    };
+
+    fetchChatroomId();
+  }, [studentTaskId, task]);
+
+  useEffect(() => {
+    if (task && (task.progress === "NOT_STARTED" || task.progress === "CHAT")) {
+      setIsFinished(false);
+    } else {
+      setIsFinished(true);
+    }
+  }, [task]);
+
+  useEffect(() => {
+    if (isFinished) {
+      inputRef.current.disabled = true;
+    }
+  }, [isFinished]);
+
+  useEffect(() => {
+    if (!chatroomId) return;
+
     const fetchMessages = async () => {
       try {
+        setLoading(true);  // 로딩 시작
         setMessages([]);
-        const response = await axios.get(`${API_BASE_URL}/v1/chatroom/${chatid}`);
+        const response = await axios.get(`${FAST_API_BASE_URL}/chat/v1/chatroom/${chatroomId}`);
+        setWords(response.data.words);
         const chat = response.data.chat;
+
+        console.log("채팅", response.data.chat);
 
         if (chat.length > 0) {
           const transformedMessages = chat.map(element => {
@@ -31,31 +138,34 @@ const ChatRoom = ({ chatroomId }) => {
           setMessages(transformedMessages);
         } else {
           try {
-            setLoading(true); // 로딩 상태 설정
-            setMessages((prevMessages) => [...prevMessages, { sender: "bot", text: <StartLoadingDots /> }]); // 로딩 메시지 추가
-            const response = await axios.post(`${FAST_API_BASE_URL}/v1/gpt`, {
+            setLoading(true);  // 로딩 시작
+            setMessages((prevMessages) => [...prevMessages, { sender: "bot", text: <StartLoadingDots /> }]);
+            const response = await axios.post(`${FAST_API_BASE_URL}/chat/v1/gpt`, {
               is_first: true,
-              fairy_id: fairyId,
-              chat_room_id: chatid,
+              fairy_id: task.fairytaleId,
+              chat_room_id: chatroomId,
               user_msg: '',
               q_type: "주인공 성격바꾸기",
             });
-            // 로딩 메시지를 실제 응답으로 교체
             setMessages((prevMessages) => {
               const updatedMessages = [...prevMessages];
               updatedMessages[updatedMessages.length - 1] = { sender: "bot", text: response.data.question };
+              setWords(response.data.words);
               return updatedMessages;
             });
           } catch (error) {
             console.error("Failed to fetch messages:", error);
           } finally {
-            setLoading(false);
+            setLoading(false);  // 로딩 종료
           }
         }
       } catch (error) {
         console.error("Failed to fetch messages:", error);
+      } finally {
+        setLoading(false);  // 로딩 종료
       }
     };
+
     fetchMessages();
   }, [chatroomId]);
 
@@ -64,119 +174,150 @@ const ChatRoom = ({ chatroomId }) => {
   }, [messages]);
 
   const handleSendMessage = async () => {
-    if(!loading){
+    if (!loading && chatroomId) {
       if (newMessage.trim()) {
         try {
           setMessages((prevMessages) => [...prevMessages, { sender: "user", text: newMessage }]);
           setNewMessage("");
-          setLoading(true); // 로딩 상태 설정
-          setMessages((prevMessages) => [...prevMessages, { sender: "bot", text: <LoadingDots /> }]); // 로딩 메시지 추가
-  
-          const response = await axios.post(`${FAST_API_BASE_URL}/v1/gpt`, {
+          setLoading(true);  // 로딩 시작
+          setMessages((prevMessages) => [...prevMessages, { sender: "bot", text: <LoadingDots /> }]);
+
+          const response = await axios.post(`${FAST_API_BASE_URL}/chat/v1/gpt`, {
             is_first: false,
-            fairy_id: fairyId,
-            chat_room_id: chatid,
+            fairy_id: task.fairytaleId,
+            chat_room_id: chatroomId,
             user_msg: newMessage,
             q_type: "주인공 성격바꾸기",
           });
-  
-          // 로딩 메시지를 실제 응답으로 교체
+
           setMessages((prevMessages) => {
             const updatedMessages = [...prevMessages];
             updatedMessages[updatedMessages.length - 1] = { sender: "bot", text: response.data.question };
+            setWords(response.data.words);
             return updatedMessages;
           });
         } catch (error) {
           console.error("Failed to send message:", error);
           alert("잠시 후에 다시 시도해주세요");
         } finally {
-          setLoading(false); // 로딩 상태 해제
+          setLoading(false);  // 로딩 종료
         }
       } else {
-        console.log("Message is empty. Please enter a message.");
         alert("메시지를 입력해주세요");
       }
     }
   };
 
   const finishChat = async () => {
-    if(!loading){
-      if (isFinished) {
-        navigate('/scatch'); // 이미 완료된 상태라면 '/scatch'로 이동
-        return;
+    if (messages.length >= 10 || isFinished) {
+      if (!loading && chatroomId) {
+        if (isFinished) {
+          navigate(`/sketch/${studentTaskId}`);
+          return;
+        }
+        try {
+          setLoading(true);  // 로딩 시작
+          setMessages((prevMessages) => [...prevMessages, { sender: "bot", text: <FinishLoadingDots /> }]);
+          
+          const response = await axios.post(`${FAST_API_BASE_URL}/chat/v1/gpt/summary`, {
+            fairy_id: task.fairytaleId,
+            chat_room_id: chatroomId,
+            q_type: "주인공 성격바꾸기",
+          });
+    
+          const progressUpdateResponse = await api.updateStudentTaskProgress(studentTaskId, {"progress":'SKETCH'});
+    
+          if (progressUpdateResponse.status === 200) {
+            await api.getStudentTasks(user.student.id);
+            task = studentTaskStore.getTasks().find(task => task.studentTaskId === parseInt(studentTaskId));
+          } else {
+            alert(`Progress 업데이트에 실패했습니다. (error: ${progressUpdateResponse.status})`);
+          }
+    
+          await axios.post(`${FAST_API_BASE_URL}/chat/v1/gpt/coding`, {
+            fairy_id: task.fairytaleId,
+            chat_room_id: chatroomId,
+            q_type: "주인공 성격바꾸기",
+          });
+  
+          setMessages((prevMessages) => {
+            const updatedMessages = [...prevMessages];
+            updatedMessages[updatedMessages.length - 1] = { sender: "bot", text: response.data.summary };
+            return updatedMessages;
+          });
+        } catch (error) {
+          console.error("Failed to send message:", error);
+        } finally {
+          setLoading(false);  // 로딩 종료
+        }
       }
-      try {
-        setLoading(true); // 로딩 상태 설정
-        setMessages((prevMessages) => [...prevMessages, { sender: "bot", text: <FinishLoadingDots /> }]); // 로딩 메시지 추가
-        const response = await axios.post(`${FAST_API_BASE_URL}/v1/gpt/summary`, {
-          fairy_id: fairyId,
-          chat_room_id: chatid,
-          q_type: "주인공 성격바꾸기",
-        });
-  
-        setMessages((prevMessages) => {
-          const updatedMessages = [...prevMessages];
-          updatedMessages[updatedMessages.length - 1] = { sender: "bot", text: response.data.summary };
-          return updatedMessages;
-        });
-  
-        const script = await axios.post(`${FAST_API_BASE_URL}/v1/gpt/coding`, {
-          fairy_id: fairyId,
-          chat_room_id: chatid,
-          q_type: "주인공 성격바꾸기",
-        });
-  
-        setIsFinished(true); // 채팅 완료 상태 설정
-      } catch (error) {
-        console.error("Failed to send message:", error);
-      } finally {
-        setLoading(false);
-      }
+    } else {
+      alert('다섯 번보다 많이 대화를 나눠야해요');
     }
+    
   };
+  
 
   return (
     <div className="w-full flex bg-ghostwhite h-screen">
-      <LeftBar finishChat={finishChat} />
+      <LeftBar 
+        finishChat={finishChat} 
+        fairytaleId={task.fairytaleId} 
+        messagesLength={messages.length} 
+        isFinished={isFinished} 
+      />
       <main className="flex-1 flex flex-col p-5">
         <section className="flex-1 flex flex-col border border-gray-300 rounded-lg bg-white p-5 h-full">
           <div className="flex-1 overflow-y-auto p-4">
-            {messages.map((message, index) => (
-              <div key={index} className={`flex mb-8 ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
-                {message.sender !== 'user' && (
-                  <img
-                    className="h-10 w-10 rounded-full mr-2 object-cover"
-                    alt="프로필 이미지"
-                    src="/character-de1111a819-1@2x.png"
-                  />
-                )}
-                <div className={`max-w-70% p-4 z-[2] text-xl ${
-                  message.sender === 'user' 
-                    ? 'bg-purple-200 text-black rounded-tr-none rounded-tl-2xl rounded-br-2xl rounded-bl-2xl' 
-                    : 'bg-whitesmoke-100 text-black rounded-tl-none rounded-bl-2xl rounded-tr-2xl rounded-br-2xl'
-                }`}>
-                  {message.text}
-                </div>
+          {messages.map((message, index) => (
+            <div key={index} className={`flex mb-8 ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
+              {message.sender !== 'user' && (
+                <img
+                  className="h-10 w-10 rounded-full mr-2 object-cover"
+                  alt="프로필 이미지"
+                  src="/character-de1111a819-1@2x.png"
+                />
+              )}
+              <div className={`max-w-70% p-4 z-[2] text-xl ${
+                message.sender === 'user' 
+                  ? 'bg-purple-200 text-black rounded-tr-none rounded-tl-2xl rounded-br-2xl rounded-bl-2xl' 
+                  : 'bg-whitesmoke-100 text-black rounded-tl-none rounded-bl-2xl rounded-tr-2xl rounded-br-2xl'
+              }`} style={{ whiteSpace: 'pre-line' }}>
+                {message.text}
               </div>
-            ))}
+            </div>
+          ))}
+
             <div ref={messagesEndRef} />
           </div>
-          <div className="flex items-center border-t border-gray-300 p-4">
-            <textarea
-              value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
-              className="text-xl flex-1 border border-gray-300 rounded-lg p-3 mr-4 resize-none shadow focus:outline-none focus:ring-2 focus:ring-purple-500"
-              placeholder="메시지를 입력하세요..."
-              rows={2}
+          <div className="relative flex items-center border-t border-gray-300 p-4 w-full">
+            <div className='relative w-full'>
+            <Autocomplete 
+              suggestions={filteredWords} 
+              onSuggestionClick={handleSuggestionClick}
             />
+              <textarea
+                ref={inputRef}
+                value={newMessage}
+                onChange={handleInputChange}
+                className="text-xl mt-2 w-full border border-gray-300 rounded-lg p-3 resize-none shadow focus:outline-none focus:ring-2 focus:ring-purple-500"
+                placeholder={isFinished ? "대화가 완료되었습니다" : "메시지를 입력해주세요"}
+                rows={2}
+              />
+              
+
+            </div>
+            
             <button
               onClick={handleSendMessage}
-              className="font-bold text-lg bg-purple-500 text-white rounded-lg p-3 shadow hover:bg-purple-600"
-              disabled={loading} // 로딩 중일 때 버튼 비활성화
+              className="ml-10 font-bold w-[80px] text-lg bg-purple-500 text-white rounded-lg p-3 shadow hover:bg-purple-600"
+              disabled={loading}  // 로딩 중일 때 버튼 비활성화
             >
               보내기
             </button>
           </div>
+
+          
         </section>
       </main>
     </div>

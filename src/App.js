@@ -5,8 +5,13 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import TeacherSignup from "./pages/TeacherSignup";
 import StudentMain from "./pages/StudentMain";
+import StudentClass from "./pages/StudentClass";
+import TeacherMain from "./pages/TeacherMain";
+import StudentSetting from "./pages/StudentSetting";
+import TeacherSetting from "./pages/TeacherSetting";
 import ChatRoom from "./pages/ChatRoom";
 import Sketch from "./pages/Sketch";
+import StudentTaskDetail from "./pages/StudentTaskDetail";
 import SketchResult from "./pages/SketchResult"; // Import SketchResult page
 
 function App() {
@@ -45,6 +50,10 @@ function App() {
         title = "Student Main";
         metaDescription = "Main page for students";
         break;
+      // case "/teacher-main":
+      //   title = "Teacher Main";
+      //   metaDescription = "Main page for teachers";
+      //   break;
       case "/chat-room":
         title = "Chat Room";
         metaDescription = "Chat room page";
@@ -57,6 +66,27 @@ function App() {
         title = "Sketch Result";
         metaDescription = "View sketch result";
         break;
+      case "/student-setting":
+        title = "Student Setting";
+        metaDescription = "Setting page for students";
+        break;
+      // case "/teacher-setting":
+      //   title = "Teacher Setting";
+      //   metaDescription = "Setting page for teachers";
+      //   break;
+
+      case "/student-classroom":
+        title = "Student Class";
+        metaDescription = "Class page for students";
+        break;
+      case "/student-task":
+        title = "Student Task";
+        metaDescription = "Task page for students";
+        break;
+      // case "/teacher-classroom":
+      //   title = "Teacher Class";
+      //   metaDescription = "Class page for teachers";
+      //   break;
     }
 
     if (title) {
@@ -78,9 +108,14 @@ function App() {
       <Route path="/signup" element={<Signup />} />
       <Route path="/teacher-signup" element={<TeacherSignup />} />
       <Route path="/student-main" element={<StudentMain />} />
-      <Route path="/chat-room" element={<ChatRoom />} />
-      <Route path="/sketch" element={<Sketch />} />
-      <Route path="/sketch-result" element={<SketchResult />} /> {/* Add sketch-result route */}
+      <Route path="/student-classroom" element={<StudentClass />} />
+      {/* <Route path="/teacher-main" element={<TeacherMain />} /> */}
+      <Route path="/student-setting" element={<StudentSetting />} />
+      {/* <Route path="/teacher-setting" element={<TeacherSetting />} /> */}
+      <Route path="/chat-room/:studentTaskId" element={<ChatRoom />} />
+      <Route path="/sketch/:studentTaskId" element={<Sketch />} />
+      <Route path="/sketch-result/:studentTaskId" element={<SketchResult />} /> {/* Add sketch-result route */}
+      <Route path="/student-task/:studentTaskId" element={<StudentTaskDetail />} /> {/* StudentTaskDetail 경로 추가 */}
     </Routes>
   );
 }
