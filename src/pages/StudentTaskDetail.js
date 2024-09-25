@@ -1,7 +1,9 @@
 import React from 'react';
 import { useCallback } from "react";
+import { getAccessToken, getRefreshToken } from '../api/auth';
 import { useParams, useNavigate } from 'react-router-dom';
 import { studentTaskStore } from "../stores/StudentTaskStore";
+import { CODING_SITE_URL } from '../config';
 import StudentSideBar from "../components/StudentSideBar";
 
 const progressStages = {
@@ -43,6 +45,22 @@ const StudentTaskDetail = () => {
     navigate("/student-classroom");
   }, [navigate]);
 
+  const navigateToSubdomain = (studentTaskId) => {
+    // State를 객체로 구성
+    const state = {
+      studentTaskId
+    };
+  
+    // State를 Base64로 인코딩
+    const encodedState = btoa(JSON.stringify(state));
+  
+    // 새 URL 구성 (서브도메인 포함)
+    const newUrl = `${CODING_SITE_URL}#${encodedState}`;
+  
+    // 새 URL로 리다이렉트
+    window.location.href = newUrl;
+  };
+
   const onContinueClick = useCallback(() => {
     switch (progress) {
       case "NOT_STARTED":
@@ -53,7 +71,7 @@ const StudentTaskDetail = () => {
         navigate(`/sketch/${studentTaskId}`);
         break;
       case "CODING":
-        navigate(`/coding-room?studentTaskId=${studentTaskId}`);
+        navigateToSubdomain(studentTaskId);
         break;
       case "COMPLETED":
         alert("모든 과정을 완료했습니다!");

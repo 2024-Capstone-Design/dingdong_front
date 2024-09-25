@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { getAccessToken } from '../api/auth';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
-import { FAST_API_BASE_URL } from '../config';
+import { studentTaskStore } from "../stores/StudentTaskStore";
+import { CODING_SITE_URL } from '../config';
 import './SketchResult.css';
 
 import JSZip from "jszip";
@@ -13,12 +14,35 @@ const SketchResult = () => {
   const location = useLocation();
   const fairytaleId = location.state?.fairytaleId;
 
+  var task = studentTaskStore.getTasks().find(task => task.studentTaskId === parseInt(studentTaskId));
+
   const navigate = useNavigate();
   const [characters, setCharacters] = useState([]);
   const [backgrounds, setBackgrounds] = useState([]);
   const [completed, setCompleted] = useState(false);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false); // 로딩 상태 추가
+
+  const updateProgress = async () => {
+    try {
+      var new_progress = "SKETCH";
+      if(completed){
+        new_progress = "SKETCH_END";
+      }else{
+        new_progress = "SKETCH";
+      }
+      const progressUpdateResponse = await api.updateStudentTaskProgress(studentTaskId, {"progress":new_progress});
+  
+        if (progressUpdateResponse.status === 200) {
+          await api.getStudentTasks(user.student.id);
+          task = studentTaskStore.getTasks().find(task => task.studentTaskId === parseInt(studentTaskId));
+        }else{
+          alert(`Progress 업데이트에 실패했습니다. (error: ${progressUpdateResponse.status})`);
+        }
+    } catch (error){
+      console.error('Error update progress:', error);
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -81,6 +105,22 @@ const SketchResult = () => {
     }
   };
 
+  const navigateToSubdomain = (studentTaskId) => {
+    // State를 객체로 구성
+    const state = {
+      studentTaskId
+    };
+  
+    // State를 Base64로 인코딩
+    const encodedState = btoa(JSON.stringify(state));
+  
+    // 새 URL 구성 (서브도메인 포함)
+    const newUrl = `${CODING_SITE_URL}#${encodedState}`;
+  
+    // 새 URL로 리다이렉트
+    window.location.href = newUrl;
+  };
+
   const goToNext = async () => {
     const zip = new JSZip();
   
@@ -106,18 +146,9 @@ const SketchResult = () => {
   
     // ZIP 파일 생성 및 다운로드 후 추가 코드 실행
     zip.generateAsync({ type: "blob" }).then(function(content) {
-      saveAs(content, "딩동.zip");
-  
-      // 다운로드가 완료된 후 실행할 코드
-      // api.updateStudentTaskProgress(studentTaskId, {"progress":'CODING'})
-      //   .then(response => {
-      //     console.log("Progress updated:", response);
-      //   })
-      //   .catch(error => {
-      //     console.error("Failed to update progress:", error);
-      //   });
-
-      // 스크래치 경로 넣기
+      // saveAs(content, "딩동.zip");
+      updateProgress();
+      navigateToSubdomain(studentTaskId);
     });
   };
   
@@ -171,7 +202,7 @@ const SketchResult = () => {
                 )}
                 {completed ? (
                   <button 
-                    className="bg-gray-500 text-white px-4 py-2 rounded mt-4 cursor-pointer"
+                    className="bg-gray-500 text-white px-4 py-2 rounded mt-4 cursor-pointer font-bold"
                     onClick={() => regenerate(character.id, 'CHARACTER')}
                   >
                     다시 만들어주세요
