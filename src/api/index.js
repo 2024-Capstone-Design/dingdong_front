@@ -67,7 +67,7 @@ const api = {
 
     if (response.ok) {
       const responseData = await response.json();
-      console.log("로그인", responseData)
+      // console.log("로그인", responseData)
       setTokens(responseData.data.accessToken, responseData.data.refreshToken);
       const userData = await this.getCurrentUser();
       const taskData = await this.getTasksByTeacher(userData.data.teacher.id);

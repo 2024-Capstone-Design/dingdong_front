@@ -108,14 +108,6 @@ const Sketch = () => {
         }),
       });
 
-      console.log("ff", JSON.stringify({
-        studentTaskId: studentTaskId,
-        characters: charac,
-        backgrounds: script[0]['1']['배경'],
-        optionIds: optionIds,
-        fairytaleId: fairytaleId
-      }));
-
         if (response.ok) {
           navigate(`/sketch-result/${studentTaskId}`, { state: { fairytaleId } });
         } else {

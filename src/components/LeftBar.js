@@ -9,7 +9,7 @@ const LeftBar = ({ className = "", finishChat, fairytaleId, messagesLength, isFi
   const [title, setTitle] = useState('');  // 초기값을 빈 문자열로 설정
   const [desc, setDesc] = useState('');
 
-  console.log("isfinished", isFinished);
+  // console.log("isfinished", isFinished);
   // API 호출
   useEffect(() => {
     const fetchFairytale = async () => {

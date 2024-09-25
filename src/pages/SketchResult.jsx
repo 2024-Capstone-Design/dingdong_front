@@ -17,11 +17,6 @@ const SketchResult = () => {
   const [loading, setLoading] = useState(false); // 로딩 상태 추가
 
   useEffect(() => {
-    console.log("Fairytale ID:", fairytaleId); // fairytaleId 사용 예시
-  }, [studentTaskId, fairytaleId]);
-
-  useEffect(() => {
-    console.log("tk", getAccessToken());
     const fetchData = async () => {
       try {
         const response = await fetch(`https://image.ding-dong.xyz/api/v1/imagine/status/${studentTaskId}`, {

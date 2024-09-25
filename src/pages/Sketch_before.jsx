@@ -43,7 +43,7 @@ const Sketch = () => {
                 }
             }
 
-            console.log("불러옴", scriptData[0]);
+            // console.log("불러옴", scriptData[0]);
 
         } catch (error) {
             console.error("Failed to fetch messages:", error);
