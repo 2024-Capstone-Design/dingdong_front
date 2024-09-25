@@ -185,7 +185,7 @@ const StudentTaskDetail = () => {
           <div className="bg-white p-8 rounded-lg shadow text-center flex flex-col items-center justify-center">
             <img src={clockImage} alt="Clock Icon" className="mb-2 h-16" />
             <h3 className="text-xl font-bold mb-2 mt-0">예상 학습 시간</h3>
-            <p className="mt-0 mb-0">{progress === "COMPLETED" ? "모든 과정을 완료했습니다!" : "학습을 완료하기 위해 2시간이 더 필요해요."}</p>
+            <p className="mt-0 mb-0">{progress === "COMPLETED" ? "모든 과정을 완료했습니다!" : "학습을 완료하기 위해 30분이 더 필요해요."}</p>
           </div>
         </div>
 
