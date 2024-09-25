@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { getAccessToken } from '../api/auth';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { FAST_API_BASE_URL } from '../config';
 import './SketchResult.css';
 
 const SketchResult = () => {
   const { studentTaskId } = useParams();
+  const location = useLocation();
+  const fairytaleId = location.state?.fairytaleId;
+
   const navigate = useNavigate();
   const [characters, setCharacters] = useState([]);
   const [backgrounds, setBackgrounds] = useState([]);
@@ -14,7 +17,11 @@ const SketchResult = () => {
   const [loading, setLoading] = useState(false); // 로딩 상태 추가
 
   useEffect(() => {
-    console.log("log", getAccessToken());
+    console.log("Fairytale ID:", fairytaleId); // fairytaleId 사용 예시
+  }, [studentTaskId, fairytaleId]);
+
+  useEffect(() => {
+    console.log("tk", getAccessToken());
     const fetchData = async () => {
       try {
         const response = await fetch(`https://image.ding-dong.xyz/api/v1/imagine/status/${studentTaskId}`, {
@@ -66,6 +73,7 @@ const SketchResult = () => {
           studentTaskId: studentTaskId,
           imageId: imageId,
           promptType: promptType,
+          fairytaleId: fairytaleId
         })
       });
       setCompleted(false);
@@ -99,9 +107,9 @@ const SketchResult = () => {
     return (
       <div className="sketch-result-container">
         <div className="error-message">
-          적합하지 않은 그림이에요. 다시 그려주세요.
+          무언가 문제가 생겼어요. 잠시 후에 다시 시도해주세요.
         </div>
-        <button onClick={handleRetry}>이전으로 돌아가기</button>
+        <button className='mt-8 cursor-pointer flex items-center justify-center w-[700px] h-[48px] bg-corporate-purple rounded-lg text-grayscale-white text-lg font-bold' onClick={handleRetry}>캐릭터 다시 만들러 가기</button>
       </div>
     );
   }

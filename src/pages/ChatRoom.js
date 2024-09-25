@@ -128,8 +128,6 @@ const ChatRoom = () => {
         setWords(response.data.words);
         const chat = response.data.chat;
 
-        console.log("채팅", response.data.chat);
-
         if (chat.length > 0) {
           const transformedMessages = chat.map(element => {
             const sender = Object.keys(element)[0] === "BOT" ? "bot" : "user";
