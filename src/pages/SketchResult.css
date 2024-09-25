@@ -46,6 +46,7 @@
   .character-card img {
     max-height: 400px;
     width: fit-content;
+    max-width: 230px;
     border-radius: 8px;
   }
   

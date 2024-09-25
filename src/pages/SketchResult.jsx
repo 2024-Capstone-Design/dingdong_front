@@ -4,6 +4,10 @@ import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { FAST_API_BASE_URL } from '../config';
 import './SketchResult.css';
 
+import JSZip from "jszip";
+import { saveAs } from "file-saver";
+
+
 const SketchResult = () => {
   const { studentTaskId } = useParams();
   const location = useLocation();
@@ -76,6 +80,48 @@ const SketchResult = () => {
       console.error("Failed to regenerate:", error);
     }
   };
+
+  const goToNext = async () => {
+    const zip = new JSZip();
+  
+    // 캐릭터 이미지 파일을 ZIP에 추가
+    for (const character of characters) {
+      for (const [index, url] of character.imageUrls.entries()) {
+        const filename = `${character.name}_${index + 1}.png`;
+        const response = await fetch(url);
+        const blob = await response.blob();
+        zip.file(`등장인물/${filename}`, blob);
+      }
+    }
+  
+    // 배경 이미지 파일을 ZIP에 추가
+    for (const background of backgrounds) {
+      for (const [index, url] of background.imageUrls.entries()) {
+        const filename = `${background.name}_${index + 1}.png`;
+        const response = await fetch(url);
+        const blob = await response.blob();
+        zip.file(`배경/${filename}`, blob);
+      }
+    }
+  
+    // ZIP 파일 생성 및 다운로드 후 추가 코드 실행
+    zip.generateAsync({ type: "blob" }).then(function(content) {
+      saveAs(content, "딩동.zip");
+  
+      // 다운로드가 완료된 후 실행할 코드
+      // api.updateStudentTaskProgress(studentTaskId, {"progress":'CODING'})
+      //   .then(response => {
+      //     console.log("Progress updated:", response);
+      //   })
+      //   .catch(error => {
+      //     console.error("Failed to update progress:", error);
+      //   });
+
+      // 스크래치 경로 넣기
+    });
+  };
+  
+  
 
   // const downloadImage = async () => {
   //   setLoading(true); // 다운로드 시작 시 로딩 상태 활성화
@@ -173,7 +219,7 @@ const SketchResult = () => {
       {loading && <div className="loading-modal">이미지를 다운로드 중입니다...</div>}
 
       {completed && 
-        <button 
+        <button onClick={goToNext}
           
           className='mt-8 cursor-pointer flex items-center justify-center w-[700px] h-[48px] bg-corporate-purple rounded-lg text-grayscale-white text-lg font-bold'
         >
