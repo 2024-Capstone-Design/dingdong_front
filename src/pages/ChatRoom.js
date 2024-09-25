@@ -155,20 +155,20 @@ const ChatRoom = () => {
             console.error("Failed to fetch messages:", error);
           } finally {
             setLoading(false);  // 로딩 종료
-            const progressUpdateResponse = await api.updateStudentTaskProgress(studentTaskId, {"progress":'CHAT'});
-    
-            if (progressUpdateResponse.status === 200) {
-              await api.getStudentTasks(user.student.id);
-              task = studentTaskStore.getTasks().find(task => task.studentTaskId === parseInt(studentTaskId));
-            } else {
-              alert(`Progress 업데이트에 실패했습니다. (error: ${progressUpdateResponse.status})`);
-            }
           }
         }
       } catch (error) {
         console.error("Failed to fetch messages:", error);
       } finally {
         setLoading(false);  // 로딩 종료
+        const progressUpdateResponse = await api.updateStudentTaskProgress(studentTaskId, {"progress":'CHAT'});
+    
+        if (progressUpdateResponse.status === 200) {
+          await api.getStudentTasks(user.student.id);
+          task = studentTaskStore.getTasks().find(task => task.studentTaskId === parseInt(studentTaskId));
+        } else {
+          alert(`Progress 업데이트에 실패했습니다. (error: ${progressUpdateResponse.status})`);
+        }
       }
     };
 

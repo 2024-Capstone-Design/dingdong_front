@@ -33,7 +33,7 @@ const LeftBar = ({ className = "", finishChat, fairytaleId, messagesLength, isFi
   }, [fairytaleId]);
 
   const onQuitClick = useCallback(() => {
-    navigate("/student-main");
+    navigate(-1);
   }, [navigate]);
 
   return (

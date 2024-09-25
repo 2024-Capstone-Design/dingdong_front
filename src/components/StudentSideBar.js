@@ -118,7 +118,7 @@ const StudentSideBar = () => {
             </div>
         </NavLink> */}
 
-        <NavLink 
+        {/* <NavLink 
             to="/student-setting" 
             className="self-stretch flex flex-row items-center justify-start gap-[16.3px] text-left text-xl text-gray-100 font-open-sans no-underline"
             style={({ isActive }) => ({
@@ -130,7 +130,7 @@ const StudentSideBar = () => {
                 <SettingsIcon fill={location.pathname === '/student-setting' ? activeColor : inactiveColor} style={{ width: 24 }} />
             </div>
             <b className="relative font-bold inline-block min-w-[61px] z-[1] mq450:text-base" style={{ minWidth: 37, color: location.pathname === '/student-setting' ? activeColor : inactiveColor }}>설정</b>
-        </NavLink>
+        </NavLink> */}
 
       </div>
       
