@@ -146,8 +146,10 @@ const SketchResult = () => {
   
     // ZIP 파일 생성 및 다운로드 후 추가 코드 실행
     zip.generateAsync({ type: "blob" }).then(function(content) {
-      // saveAs(content, "딩동.zip");
+      setLoading(true);
+      saveAs(content, "딩동.zip");
       updateProgress();
+      setLoading(false);
       navigateToSubdomain(studentTaskId);
     });
   };
