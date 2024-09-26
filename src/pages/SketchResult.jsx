@@ -26,8 +26,10 @@ const SketchResult = () => {
   const updateProgress = async () => {
     try {
       var new_progress = "SKETCH";
-      if(completed){
+      if(completed && task.progress == "SKETCH"){
         new_progress = "SKETCH_END";
+      }else if(completed && task.progress == "SKETCH_END"){
+        new_progress = "CODING";
       }else{
         new_progress = "SKETCH";
       }
@@ -77,6 +79,8 @@ const SketchResult = () => {
     if (!completed) {
       const interval = setInterval(fetchData, 3000);
       return () => clearInterval(interval);
+    }else{
+      updateProgress();
     }
   }, [completed, studentTaskId]);
 
@@ -148,7 +152,6 @@ const SketchResult = () => {
     zip.generateAsync({ type: "blob" }).then(function(content) {
       setLoading(true);
       saveAs(content, "딩동.zip");
-      updateProgress();
       setLoading(false);
       navigateToSubdomain(studentTaskId);
     });
