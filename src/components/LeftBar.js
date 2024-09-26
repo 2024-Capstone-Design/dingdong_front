@@ -44,16 +44,12 @@ const LeftBar = ({ className = "", finishChat, fairytaleId, messagesLength, isFi
       <div className="flex flex-row items-start justify-start py-0 px-[31px]">
         <div className="flex flex-row items-start justify-start gap-[3.7px]">
           <img
-            className="h-[34.9px] w-[22.1px] relative z-[1]"
-            loading="lazy"
-            alt=""
-            src="/group-1.svg"
-          />
-          <div className="flex flex-col items-start justify-start pt-[5.1px] px-0 pb-0">
-            <a className="[text-decoration:none] relative font-bold text-[inherit] inline-block min-w-[56.9px] z-[1] mq450:text-lg">
-              Logo
-            </a>
-          </div>
+              className="h-[40px] relative"
+              loading="lazy"
+              alt=""
+              src="/dingdong.png"
+
+            />
         </div>
       </div>
       <div className="self-stretch flex flex-col items-start justify-start pt-0 px-0 pb-[60px] gap-[78px] text-13xl text-black font-base-body mq800:pb-[55px] mq800:box-border">

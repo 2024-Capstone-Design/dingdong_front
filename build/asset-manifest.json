@@ -1,0 +1,23 @@
+{
+  "files": {
+    "main.css": "/static/css/main.1fcc4290.css",
+    "main.js": "/static/js/main.05124d8f.js",
+    "static/js/453.7b75abd7.chunk.js": "/static/js/453.7b75abd7.chunk.js",
+    "static/media/teacherSignupModal.svg": "/static/media/teacherSignupModal.e5e9b5a04a7a2db99664348a6bed917e.svg",
+    "static/media/iconlylight-outlinesetting.svg": "/static/media/iconlylight-outlinesetting.21e8126e920e7b3996b8af493f34dc87.svg",
+    "static/media/iconlylight-outline3-user.svg": "/static/media/iconlylight-outline3-user.63dbb58b298f5f077a8e0ba71b2b0f75.svg",
+    "static/media/iconlylight-outlinechat.svg": "/static/media/iconlylight-outlinechat.4c3d4a675c9a99ac5912789b08570074.svg",
+    "static/media/iconlylight-outlinebookmark.svg": "/static/media/iconlylight-outlinebookmark.c737a7d46d45321aad12ee2e0a25616a.svg",
+    "static/media/iconlyboldhome.svg": "/static/media/iconlyboldhome.5d7778e1e02728da88ad1eb43d2cb6eb.svg",
+    "index.html": "/index.html",
+    "static/media/Pretendard-Medium.otf": "/static/media/Pretendard-Medium.31d6cfe0d16ae931b73c.otf",
+    "static/media/Pretendard-Regular.otf": "/static/media/Pretendard-Regular.31d6cfe0d16ae931b73c.otf",
+    "main.1fcc4290.css.map": "/static/css/main.1fcc4290.css.map",
+    "main.05124d8f.js.map": "/static/js/main.05124d8f.js.map",
+    "453.7b75abd7.chunk.js.map": "/static/js/453.7b75abd7.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.1fcc4290.css",
+    "static/js/main.05124d8f.js"
+  ]
+}

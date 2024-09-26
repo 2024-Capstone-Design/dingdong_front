@@ -43,18 +43,12 @@ const Header = ({
             onClick={onLogoContainerClick}
           >
             <img
-              className="h-[34.9px] w-[29.9px] relative"
+              className="h-[40px] relative"
               loading="lazy"
               alt=""
-              src="/group-11.svg"
+              src="/dingdong.png"
 
             />
-            <div className="flex-1 flex flex-col items-start justify-start pt-[5.1px] px-0 pb-0">
-              <a className="[text-decoration:none] self-stretch relative font-bold text-[inherit] whitespace-nowrap mq1125:text-lg">
-
-                Logo
-              </a>
-            </div>
           </div>
         </div>
         <div className="w-[480px] flex flex-row items-start justify-start gap-[24px] max-w-full text-center text-lg text-neutral-colors-headings-black font-text-single-200-bold mq450:w-[162px]">

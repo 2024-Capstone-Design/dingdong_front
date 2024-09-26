@@ -46,10 +46,13 @@ const StudentSideBar = () => {
       
       <div className="self-stretch flex flex-row items-start justify-end py-0 pr-[78px] pl-20 mq450:pl-5 mq450:pr-5 mq450:box-border">
         <div className="flex-1 flex flex-row items-start justify-start gap-[5px] hover:cursor-pointer" onClick={() => navigate(`/student-main`)}>
-          <img className="h-[34.9px] w-[29.9px] relative z-[1]" loading="lazy" src='/group-11.svg' />
-          <div className="flex-1 flex flex-col items-start justify-start pt-[5.1px] px-0 pb-0">
-            <a className="[text-decoration:none] self-stretch relative font-bold text-[inherit] z-[1] mq450:text-lg">Logo</a>
-          </div>
+          <img
+                className="h-[40px] relative"
+                loading="lazy"
+                alt=""
+                src="/dingdong.png"
+
+              />
         </div>
       </div>
       
