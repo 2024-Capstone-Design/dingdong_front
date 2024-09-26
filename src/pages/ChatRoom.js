@@ -291,12 +291,7 @@ const ChatRoom = () => {
                   ? 'bg-purple-200 text-black rounded-tr-none rounded-tl-2xl rounded-br-2xl rounded-bl-2xl' 
                   : 'bg-whitesmoke-100 text-black rounded-tl-none rounded-bl-2xl rounded-tr-2xl rounded-br-2xl'
               }`} style={{ whiteSpace: 'pre-line' }}>
-                {message.text.split('\n').map((line, index) => (
-                  <span key={index}>
-                    {line}
-                    <br />
-                  </span>
-                ))}
+                {message.text}
               </div>
             </div>
           ))}
