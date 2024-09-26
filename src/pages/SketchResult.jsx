@@ -3,6 +3,7 @@ import { getAccessToken } from '../api/auth';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { studentTaskStore } from "../stores/StudentTaskStore";
 import { CODING_SITE_URL } from '../config';
+import { api } from "../api/index";
 import './SketchResult.css';
 
 import JSZip from "jszip";

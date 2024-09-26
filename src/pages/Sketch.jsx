@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { getAccessToken } from '../api/auth';
 import { useNavigate, useParams } from "react-router-dom";
 import { FAST_API_BASE_URL } from "../config";
+import { api } from "../api/index";
 
 const Sketch = () => {
   const { studentTaskId } = useParams();
