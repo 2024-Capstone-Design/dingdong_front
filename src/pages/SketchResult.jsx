@@ -249,7 +249,14 @@ const SketchResult = () => {
         )}
       </div>
 
-      {!completed && <div className="loading-bar"></div>}
+      {!completed && (
+        <div className="loading-bar-container">
+          <div className="loading-bar-text">
+            선택한대로 그림이 만들어지지 않을 수 있어요
+          </div>
+          <div className="loading-bar"></div>
+        </div>
+      )}
       
       {/* 로딩 상태일 때 로딩창 표시 */}
       {loading && <div className="loading-modal">이미지를 다운로드 중입니다...</div>}

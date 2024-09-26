@@ -93,30 +93,53 @@
     color: #888;
   }
   
-  
-  .loading-bar {
-    margin-top: 20px;
-    width: 80%;
-    background-color: #ddd;
-    border-radius: 5px;
-    overflow: hidden;
+/* 로딩 바와 텍스트를 담는 컨테이너 */
+.loading-bar-container {
+  height: 30px;
+  position: relative;
+  width: 80%;
+  margin-top: 60px;
+}
+
+/* 텍스트 스타일 */
+.loading-bar-text {
+  display: flex;
+  justify-content: center;  /* 가로 중앙 정렬 */
+  align-items: center;      /* 세로 중앙 정렬 */
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  color: white; /* 텍스트 색상 */
+  font-size: 18px;
+  font-weight: bold;
+  z-index: 1;
+}
+
+
+/* 로딩 바 스타일 */
+.loading-bar {
+  height: 30px;
+  background-color: #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.loading-bar::after {
+  content: "";
+  display: block;
+  height: 30px;
+  background-color: #9D3FE7;
+  width: 100%;
+  animation: loading 3s linear infinite;
+}
+
+@keyframes loading {
+  0% {
+    width: 0;
   }
-  
-  .loading-bar::after {
-    content: "";
-    display: block;
-    height: 20px;
-    background-color: #9D3FE7;
+  100% {
     width: 100%;
-    animation: loading 3s linear infinite;
   }
-  
-  @keyframes loading {
-    0% {
-      width: 0;
-    }
-    100% {
-      width: 100%;
-    }
-  }
+}
+
   
