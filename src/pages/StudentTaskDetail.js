@@ -17,11 +17,15 @@ const progressStages = {
   },
   SKETCH: {
     description: "그림을 그리고 있습니다.",
-    percentage: 50,
+    percentage: 40,
+  },
+  SKETCH_END: {
+    description: "그림이 완성되었습니다.",
+    percentage: 60,
   },
   CODING: {
     description: "애니메이션 코딩을 진행 중입니다.",
-    percentage: 70,
+    percentage: 80,
   },
   COMPLETED: {
     description: "모든 과정을 완료했습니다!",
@@ -69,6 +73,9 @@ const StudentTaskDetail = () => {
         break;
       case "SKETCH":
         navigate(`/sketch/${studentTaskId}`);
+        break;
+      case "SKETCH_END":
+        navigateToSubdomain(studentTaskId);
         break;
       case "CODING":
         navigateToSubdomain(studentTaskId);
