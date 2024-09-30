@@ -183,7 +183,8 @@ const ChatRoom = () => {
 
   const handleSendMessage = async () => {
     if (!loading && chatroomId) {
-      if (newMessage.trim().length < 3) {
+      console.log("message", newMessage.trim().length);
+      if (newMessage.trim().length > 3) {
         try {
           setMessages((prevMessages) => [...prevMessages, { sender: "user", text: newMessage }]);
           setNewMessage("");
