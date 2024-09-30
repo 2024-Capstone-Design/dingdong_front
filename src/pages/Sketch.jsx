@@ -7,6 +7,7 @@ import { api } from "../api/index";
 const Sketch = () => {
   const { studentTaskId } = useParams();
   const [script, setScript] = useState([]);
+  const [charac, setCharac] = useState([]);
   const [mainRoleName, setMainRoleName] = useState("");
   const [styleOptions, setStyleOptions] = useState([]);
   const [selectedOptions, setSelectedOptions] = useState({});
@@ -57,6 +58,33 @@ const Sketch = () => {
     useEffect(() => {
       if(script.length > 0){
         setFairytaleId(script[0]['fairytaleId']);
+
+        const peopleList = [];
+
+        Object.keys(script).forEach((key) => {
+          const item = script[key];
+          if (key === 'created_at' || key === 'id') return;
+          
+          // '1', '2', '3', '4'의 키를 모두 처리
+          ['1', '2', '3', '4'].forEach((num) => {
+            if (item[num] && item[num]['인물']) {
+              item[num]['인물'].forEach((person, index) => {
+                const personData = {
+                  name: person['이름'],
+                  main: index === 0,
+                  prompt: person['프롬프트'],
+                };
+
+                // 중복된 이름이 있는지 확인하고 없을 경우에만 추가
+                if (!peopleList.some(p => p.name === personData.name)) {
+                  peopleList.push(personData);
+                }
+              });
+            }
+          });
+
+          setCharac(peopleList);
+        });
       }
     }, [script])
 
@@ -66,7 +94,6 @@ const Sketch = () => {
     };
 
     var item = null;
-    var charac = null;
 
     const submitDrawing = async () => {
       // 선택되지 않은 카테고리 확인
@@ -82,32 +109,14 @@ const Sketch = () => {
 
       const optionIds = styleOptions.map(category => selectedOptions[category.id]);
 
-      const peopleList = [];
-
-      Object.keys(script).forEach((key) => {
-        const item = script[key];
-        if (key === 'created_at' || key === 'id') return;
-        
-        // '1', '2', '3', '4'의 키를 모두 처리
-        ['1', '2', '3', '4'].forEach((num) => {
-          if (item[num] && item[num]['인물']) {
-            item[num]['인물'].forEach((person, index) => {
-              const personData = {
-                name: person['이름'],
-                main: index === 0,
-                prompt: person['프롬프트'],
-              };
-
-              // 중복된 이름이 있는지 확인하고 없을 경우에만 추가
-              if (!peopleList.some(p => p.name === personData.name)) {
-                peopleList.push(personData);
-              }
-            });
-          }
-        });
-      });
-
       try {
+        console.log("charac", JSON.stringify({
+          studentTaskId: studentTaskId,
+          characters: charac,
+          backgrounds: script[0]['1']['배경'],
+          optionIds: optionIds,
+          fairytaleId: fairytaleId
+        }));
         const response = await fetch("https://image.ding-dong.xyz/api/v1/imagine/generate", {
           method: "POST",
           headers: {
