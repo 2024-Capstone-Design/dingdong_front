@@ -69,54 +69,68 @@ const Sketch = () => {
     var charac = null;
 
     const submitDrawing = async () => {
-    // 선택되지 않은 카테고리 확인
-    const unselectedCategories = styleOptions
-      .filter(category => !selectedOptions[category.id])  // 선택되지 않은 옵션
-      .map(category => category.name);  // 선택되지 않은 카테고리 이름
+      // 선택되지 않은 카테고리 확인
+      const unselectedCategories = styleOptions
+        .filter(category => !selectedOptions[category.id])  // 선택되지 않은 옵션
+        .map(category => category.name);  // 선택되지 않은 카테고리 이름
 
-    if (unselectedCategories.length > 0) {
-      // 선택되지 않은 카테고리가 있으면 경고 메시지 표시
-      alert(`다음 항목을 선택해주세요: ${unselectedCategories.join(', ')}`);
-      return; // 서버 요청을 보내지 않음
-    }
+      if (unselectedCategories.length > 0) {
+        // 선택되지 않은 카테고리가 있으면 경고 메시지 표시
+        alert(`다음 항목을 선택해주세요: ${unselectedCategories.join(', ')}`);
+        return; // 서버 요청을 보내지 않음
+      }
 
-    const optionIds = styleOptions.map(category => selectedOptions[category.id]);
+      const optionIds = styleOptions.map(category => selectedOptions[category.id]);
 
-    Object.keys(script).map(key => {
-      item = script[key];
-      if (key === 'created_at' || key === 'id') return null;
-      charac = item['1']['인물'].map((person, index) => ({
-        name: person['이름'],
-        main: index === 0,
-        prompt: person['프롬프트'],
-      }));
-    });
+      const peopleList = [];
 
+      Object.keys(script).forEach((key) => {
+        const item = script[key];
+        if (key === 'created_at' || key === 'id') return;
+        
+        // '1', '2', '3', '4'의 키를 모두 처리
+        ['1', '2', '3', '4'].forEach((num) => {
+          if (item[num] && item[num]['인물']) {
+            item[num]['인물'].forEach((person, index) => {
+              const personData = {
+                name: person['이름'],
+                main: index === 0,
+                prompt: person['프롬프트'],
+              };
 
-    try {
-      const response = await fetch("https://image.ding-dong.xyz/api/v1/imagine/generate", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          'Authorization': `Bearer ${getAccessToken()}`,
-        },
-        body: JSON.stringify({
-          studentTaskId: studentTaskId,
-          characters: charac,
-          backgrounds: script[0]['1']['배경'],
-          optionIds: optionIds,
-          fairytaleId: fairytaleId
-        }),
+              // 중복된 이름이 있는지 확인하고 없을 경우에만 추가
+              if (!peopleList.some(p => p.name === personData.name)) {
+                peopleList.push(personData);
+              }
+            });
+          }
+        });
       });
 
-        if (response.ok) {
-          navigate(`/sketch-result/${studentTaskId}`, { state: { fairytaleId } });
-        } else {
-          throw new Error(`An error has occurred: ${response.status}`);
+      try {
+        const response = await fetch("https://image.ding-dong.xyz/api/v1/imagine/generate", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            'Authorization': `Bearer ${getAccessToken()}`,
+          },
+          body: JSON.stringify({
+            studentTaskId: studentTaskId,
+            characters: charac,
+            backgrounds: script[0]['1']['배경'],
+            optionIds: optionIds,
+            fairytaleId: fairytaleId
+          }),
+        });
+
+          if (response.ok) {
+            navigate(`/sketch-result/${studentTaskId}`, { state: { fairytaleId } });
+          } else {
+            throw new Error(`An error has occurred: ${response.status}`);
+          }
+        } catch (error) {
+          console.error("Failed to submit drawing:", error);
         }
-      } catch (error) {
-        console.error("Failed to submit drawing:", error);
-      }
     };
 
 
