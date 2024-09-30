@@ -143,7 +143,7 @@ const ChatRoom = () => {
               fairy_id: task.fairytaleId,
               chat_room_id: chatroomId,
               user_msg: '',
-              q_type: "주인공 성격바꾸기",
+              q_type: task.questionType,
             });
             setMessages((prevMessages) => {
               const updatedMessages = [...prevMessages];
@@ -195,7 +195,7 @@ const ChatRoom = () => {
             fairy_id: task.fairytaleId,
             chat_room_id: chatroomId,
             user_msg: newMessage,
-            q_type: "주인공 성격바꾸기",
+            q_type: task.questionType,
           });
 
           setMessages((prevMessages) => {
@@ -230,7 +230,7 @@ const ChatRoom = () => {
           const response = await axios.post(`${FAST_API_BASE_URL}/chat/v1/gpt/summary`, {
             fairy_id: task.fairytaleId,
             chat_room_id: chatroomId,
-            q_type: "주인공 성격바꾸기",
+            q_type: task.questionType,
           });
     
           const progressUpdateResponse = await api.updateStudentTaskProgress(studentTaskId, {"progress":'SKETCH'});
@@ -245,7 +245,7 @@ const ChatRoom = () => {
           await axios.post(`${FAST_API_BASE_URL}/chat/v1/gpt/coding`, {
             fairy_id: task.fairytaleId,
             chat_room_id: chatroomId,
-            q_type: "주인공 성격바꾸기",
+            q_type: task.questionType,
           });
   
           setMessages((prevMessages) => {
@@ -318,8 +318,8 @@ const ChatRoom = () => {
             
             <button
               onClick={handleSendMessage}
-              className="ml-10 font-bold w-[80px] text-lg bg-purple-500 text-white rounded-lg p-3 shadow hover:bg-purple-600"
-              disabled={loading}  // 로딩 중일 때 버튼 비활성화
+              className={`ml-10 font-bold w-[80px] text-lg text-white rounded-lg p-3 shadow ${loading || isFinished ? 'bg-stone-300' : 'bg-purple-500 hover:bg-purple-600' }`}
+              disabled={loading || isFinished}  // 로딩 중일 때 버튼 비활성화
             >
               보내기
             </button>

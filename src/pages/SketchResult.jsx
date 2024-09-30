@@ -3,14 +3,15 @@ import { getAccessToken } from '../api/auth';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { studentTaskStore } from "../stores/StudentTaskStore";
 import { CODING_SITE_URL } from '../config';
+import { userStore } from "../stores/UserStore";
 import { api } from "../api/index";
 import './SketchResult.css';
 
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
 
-
 const SketchResult = () => {
+  const user = userStore.getUser();
   const { studentTaskId } = useParams();
   const location = useLocation();
   const fairytaleId = location.state?.fairytaleId;
@@ -27,22 +28,22 @@ const SketchResult = () => {
   const updateProgress = async () => {
     try {
       var new_progress = "SKETCH";
-      if(completed && task.progress == "SKETCH"){
+      if (completed && task.progress === "SKETCH") {
         new_progress = "SKETCH_END";
-      }else if(completed && task.progress == "SKETCH_END"){
+      } else if (completed && task.progress === "SKETCH_END") {
         new_progress = "CODING";
-      }else{
+      } else {
         new_progress = "SKETCH";
       }
-      const progressUpdateResponse = await api.updateStudentTaskProgress(studentTaskId, {"progress":new_progress});
-  
-        if (progressUpdateResponse.status === 200) {
-          await api.getStudentTasks(user.student.id);
-          task = studentTaskStore.getTasks().find(task => task.studentTaskId === parseInt(studentTaskId));
-        }else{
-          alert(`Progress 업데이트에 실패했습니다. (error: ${progressUpdateResponse.status})`);
-        }
-    } catch (error){
+      const progressUpdateResponse = await api.updateStudentTaskProgress(studentTaskId, { "progress": new_progress });
+
+      if (progressUpdateResponse.status === 200) {
+        await api.getStudentTasks(user.student.id);
+        task = studentTaskStore.getTasks().find(task => task.studentTaskId === parseInt(studentTaskId));
+      } else {
+        alert(`Progress 업데이트에 실패했습니다. (error: ${progressUpdateResponse.status})`);
+      }
+    } catch (error) {
       console.error('Error update progress:', error);
     }
   };
@@ -62,9 +63,9 @@ const SketchResult = () => {
         setCharacters(data.data.character);
         setBackgrounds(data.data.background);
         setCompleted(data.data.completed);
-        
+
         let hasError = data.data.character.some((character) => character.status === 'failed') ||
-                       data.data.background.some((background) => background.status === 'failed');
+          data.data.background.some((background) => background.status === 'failed');
 
         if (hasError) {
           setError(true);
@@ -80,7 +81,7 @@ const SketchResult = () => {
     if (!completed) {
       const interval = setInterval(fetchData, 3000);
       return () => clearInterval(interval);
-    }else{
+    } else {
       updateProgress();
     }
   }, [completed, studentTaskId]);
@@ -111,24 +112,16 @@ const SketchResult = () => {
   };
 
   const navigateToSubdomain = (studentTaskId) => {
-    // State를 객체로 구성
-    const state = {
-      studentTaskId
-    };
-  
-    // State를 Base64로 인코딩
+    const state = { studentTaskId };
     const encodedState = btoa(JSON.stringify(state));
-  
-    // 새 URL 구성 (서브도메인 포함)
     const newUrl = `${CODING_SITE_URL}#${encodedState}`;
-  
-    // 새 URL로 리다이렉트
     window.location.href = newUrl;
   };
 
   const goToNext = async () => {
+    setLoading(true); // 로딩 상태 활성화
     const zip = new JSZip();
-  
+
     // 캐릭터 이미지 파일을 ZIP에 추가
     for (const character of characters) {
       for (const [index, url] of character.imageUrls.entries()) {
@@ -138,7 +131,7 @@ const SketchResult = () => {
         zip.file(`등장인물/${filename}`, blob);
       }
     }
-  
+
     // 배경 이미지 파일을 ZIP에 추가
     for (const background of backgrounds) {
       for (const [index, url] of background.imageUrls.entries()) {
@@ -148,38 +141,14 @@ const SketchResult = () => {
         zip.file(`배경/${filename}`, blob);
       }
     }
-  
+
     // ZIP 파일 생성 및 다운로드 후 추가 코드 실행
-    zip.generateAsync({ type: "blob" }).then(function(content) {
-      setLoading(true);
+    zip.generateAsync({ type: "blob" }).then(function (content) {
       saveAs(content, "딩동.zip");
-      setLoading(false);
+      setLoading(false); // 로딩 상태 비활성화
       navigateToSubdomain(studentTaskId);
     });
   };
-  
-  
-
-  // const downloadImage = async () => {
-  //   setLoading(true); // 다운로드 시작 시 로딩 상태 활성화
-  //   try {
-  //     await fetch(`${FAST_API_BASE_URL}/download/v1/images`, {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify({
-  //         student_task_id: studentTaskId,
-  //         characters: characters,
-  //         backgrounds: backgrounds
-  //       })
-  //     });
-  //   } catch (error) {
-  //     console.error("Failed to regenerate:", error);
-  //   } finally {
-  //     setLoading(false); // 다운로드 완료 시 로딩 상태 비활성화
-  //   }
-  // };
 
   if (error) {
     return (
@@ -207,7 +176,7 @@ const SketchResult = () => {
                   <div className="placeholder">생성중</div>
                 )}
                 {completed ? (
-                  <button 
+                  <button
                     className="bg-gray-500 text-white px-4 py-2 rounded mt-4 cursor-pointer font-bold"
                     onClick={() => regenerate(character.id, 'CHARACTER')}
                   >
@@ -235,7 +204,7 @@ const SketchResult = () => {
                   <div className="placeholder">생성중</div>
                 )}
                 {completed ? (
-                  <button 
+                  <button
                     className="bg-gray-500 text-white px-4 py-2 rounded mt-2"
                     onClick={() => regenerate(background.id, 'BACKGROUND')}
                   >
@@ -258,18 +227,16 @@ const SketchResult = () => {
           <div className="loading-bar"></div>
         </div>
       )}
-      
-      {/* 로딩 상태일 때 로딩창 표시 */}
-      {loading && <div className="loading-modal">이미지를 다운로드 중입니다...</div>}
 
-      {completed && 
-        <button onClick={goToNext}
-          
-          className='mt-8 cursor-pointer flex items-center justify-center w-[700px] h-[48px] bg-corporate-purple rounded-lg text-grayscale-white text-lg font-bold'
+      {completed && (
+        <button
+          onClick={goToNext}
+          className={`mt-8 flex items-center justify-center w-[700px] h-[48px] rounded-lg text-grayscale-white text-lg font-bold ${loading ? 'bg-gray-500 cursor-not-allowed' : 'bg-corporate-purple cursor-pointer'}`}
+          disabled={loading} // 로딩 중 버튼 비활성화
         >
-          다음단계
+          {loading ? '다운로드 중...' : '다음단계'}
         </button>
-      }
+      )}
     </div>
   );
 };
