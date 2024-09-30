@@ -183,7 +183,7 @@ const ChatRoom = () => {
 
   const handleSendMessage = async () => {
     if (!loading && chatroomId) {
-      if (newMessage.trim()) {
+      if (newMessage.trim().length < 3) {
         try {
           setMessages((prevMessages) => [...prevMessages, { sender: "user", text: newMessage }]);
           setNewMessage("");
@@ -211,7 +211,7 @@ const ChatRoom = () => {
           setLoading(false);  // 로딩 종료
         }
       } else {
-        alert("메시지를 입력해주세요");
+        alert("메시지를 세글자보다 길게 입력해주세요");
       }
     }
   };
