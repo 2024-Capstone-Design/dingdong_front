@@ -110,13 +110,7 @@ const Sketch = () => {
       const optionIds = styleOptions.map(category => selectedOptions[category.id]);
 
       try {
-        console.log("charac", JSON.stringify({
-          studentTaskId: studentTaskId,
-          characters: charac,
-          backgrounds: script[0]['1']['배경'],
-          optionIds: optionIds,
-          fairytaleId: fairytaleId
-        }));
+        
         const response = await fetch("https://image.ding-dong.xyz/api/v1/imagine/generate", {
           method: "POST",
           headers: {
