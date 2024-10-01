@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { getAccessToken } from '../api/auth';
 import { useNavigate, useParams } from "react-router-dom";
 import { FAST_API_BASE_URL } from "../config";
-import { api } from "../api/index";
+import { studentTaskStore } from "../stores/StudentTaskStore";
 
 const Sketch = () => {
   const { studentTaskId } = useParams();
@@ -13,6 +13,16 @@ const Sketch = () => {
   const [selectedOptions, setSelectedOptions] = useState({});
   const navigate = useNavigate();
   const [fairytaleId, setFairytaleId] = useState("");
+
+  var task = studentTaskStore.getTasks().find(task => task.studentTaskId === parseInt(studentTaskId));
+
+  const jsonString = task.fairytaleResponse.characters;
+
+  // JSON 문자열을 객체로 변환
+  const characterObject = JSON.parse(jsonString);
+
+  // 객체의 키 값(즉, "토끼"와 "거북이")을 배열로 추출
+  const characterNames = Object.keys(characterObject);
 
   useEffect(() => {
     const fetchMessages = async () => {
@@ -76,7 +86,7 @@ const Sketch = () => {
                 };
 
                 // 중복된 이름이 있는지 확인하고 없을 경우에만 추가
-                if (!peopleList.some(p => p.name === personData.name)) {
+                if (!peopleList.some(p => p.name === personData.name) && characterNames.some(p => p === personData.name)) {
                   peopleList.push(personData);
                 }
               });
