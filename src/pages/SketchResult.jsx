@@ -27,21 +27,23 @@ const SketchResult = () => {
 
   const updateProgress = async () => {
     try {
-      var new_progress = "SKETCH";
-      if (completed && task.progress === "SKETCH") {
+      var new_progress = "";
+      if (completed && task.progress == "SKETCH") {
         new_progress = "SKETCH_END";
-      } else if (completed && task.progress === "SKETCH_END") {
+      } else if (completed && (task.progress == "SKETCH_END" || task.progress == "CODING")) {
         new_progress = "CODING";
       } else {
         new_progress = "SKETCH";
       }
-      const progressUpdateResponse = await api.updateStudentTaskProgress(studentTaskId, { "progress": new_progress });
+      if(new_progress != ""){
+        const progressUpdateResponse = await api.updateStudentTaskProgress(studentTaskId, { "progress": new_progress });
 
-      if (progressUpdateResponse.status === 200) {
-        await api.getStudentTasks(user.student.id);
-        task = studentTaskStore.getTasks().find(task => task.studentTaskId === parseInt(studentTaskId));
-      } else {
-        alert(`Progress 업데이트에 실패했습니다. (error: ${progressUpdateResponse.status})`);
+        if (progressUpdateResponse.status === 200) {
+          await api.getStudentTasks(user.student.id);
+          task = studentTaskStore.getTasks().find(task => task.studentTaskId === parseInt(studentTaskId));
+        } else {
+          alert(`Progress 업데이트에 실패했습니다. (error: ${progressUpdateResponse.status})`);
+        }
       }
     } catch (error) {
       console.error('Error update progress:', error);
@@ -81,7 +83,7 @@ const SketchResult = () => {
     if (!completed) {
       const interval = setInterval(fetchData, 3000);
       return () => clearInterval(interval);
-    } else {
+    } else if(!error) {
       updateProgress();
     }
   }, [completed, studentTaskId]);
@@ -146,6 +148,7 @@ const SketchResult = () => {
     zip.generateAsync({ type: "blob" }).then(function (content) {
       saveAs(content, "딩동.zip");
       setLoading(false); // 로딩 상태 비활성화
+      updateProgress();
       navigateToSubdomain(studentTaskId);
     });
   };

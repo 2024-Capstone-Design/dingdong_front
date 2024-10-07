@@ -31,7 +31,7 @@ const Frame2 = () => {
   }, [navigate]);
 
   return (
-    <div className="w-full relative bg-grayscale-white overflow-hidden flex flex-col items-start justify-start leading-[normal] tracking-[normal]">
+    <div className="w-full h-screen flex flex-col bg-grayscale-white overflow-hidden">
 
       <Header
         onLogoContainerClick={onLogoContainerClick}
@@ -40,7 +40,7 @@ const Frame2 = () => {
         onFAQTextClick={onFAQTextClick}
         onStudentStartBtnClick={onStudentStartBtnClick}
       />
-      <main className="self-stretch bg-grayscale-white flex flex-row flex-wrap items-start justify-start pt-[139.7px] px-[110px] pb-[141.5px] box-border gap-[40px] max-w-full text-left text-17xl text-grayscale-white font-text-single-200-bold mq800:pl-5 mq800:pr-5 mq800:box-border mq1125:gap-[20px] mq1125:pt-[91px] mq1125:px-[55px] mq1125:pb-[92px] mq1125:box-border">
+      <main className="self-stretch bg-grayscale-white flex flex-grow flex-wrap items-center justify-start pt-[139.7px] px-[110px] pb-[141.5px] box-border gap-[40px] max-w-full text-left text-17xl text-grayscale-white font-text-single-200-bold mq800:pl-5 mq800:pr-5 mq800:box-border mq1125:gap-[20px] mq1125:pt-[91px] mq1125:px-[55px] mq1125:pb-[92px] mq1125:box-border">
         <div className="h-[744px] w-[1440px] relative bg-grayscale-white hidden max-w-full" />
         <div className="flex-1 flex flex-col items-start justify-start pt-[110.3px] pb-[108.6px] pr-5 pl-[69px] box-border relative gap-[23px] min-w-[383px] max-w-full mq450:pl-[34px] mq450:box-border mq450:min-w-full mq800:pt-[72px] mq800:pb-[71px] mq800:box-border">
 

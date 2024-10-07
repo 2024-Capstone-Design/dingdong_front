@@ -68,7 +68,7 @@ const Login = () => {
   }, [navigate, role, classId, username, password]);
 
   return (
-    <div className="w-full relative bg-grayscale-white overflow-hidden flex flex-col items-start justify-start leading-[normal] tracking-[normal]">
+    <div className="w-full h-screen flex flex-col bg-grayscale-white overflow-hidden">
       <Header
         onLogoContainerClick={onLogoContainerClick}
         onAboutTextClick={onAboutTextClick}
@@ -76,14 +76,9 @@ const Login = () => {
         onFAQTextClick={onFAQTextClick}
         onMasterPrimaryButtonClick={onMasterPrimaryButtonClick}
       />
-      <main className="self-stretch h-[781px] relative bg-grayscale-white overflow-hidden shrink-0 max-w-full mq500:h-auto mq500:min-h-[781]">
-        <section className="absolute top-[0px] left-[0px] w-full flex flex-row items-start justify-start gap-[494.7px] max-w-full h-full mq450:gap-[62px] mq800:gap-[124px] mq500:flex-wrap mq500:gap-[247px]">
-          <div className="self-stretch w-[1440px] relative bg-grayscale-white hidden max-w-full" />
-          <div className="self-stretch w-[1440px] relative bg-grayscale-white hidden max-w-full" />
-
-          <div className="h-[781px] w-[410.9px] relative bg-neutral-colors-color-500 max-w-full z-[2]" />
-          <div className="w-[416.4px] flex flex-col items-start justify-start pt-[195px] px-0 pb-0 box-border max-w-full">
-            <form className="m-0 self-stretch flex flex-col items-start justify-start gap-[29.8px]">
+      <main className="flex-grow flex items-center justify-center bg-grayscale-white overflow-hidden">
+        <div className="w-full max-w-[1440px] flex flex-row items-end justify-end mq1125:items-center mq1125:justify-center px-4">
+          <form className="w-[500px] flex flex-col items-start justify-start gap-[29.8px]">
               <div className="w-[274px] flex flex-col items-start justify-start py-0 pr-5 pl-0 box-border gap-[8px]">
                 <b className="relative text-lg tracking-[0.1em] leading-[20px] uppercase font-bold font-text-single-200-bold text-lightslategray text-left inline-block min-w-[71px] whitespace-nowrap z-[2]">
                   Log in
@@ -115,7 +110,7 @@ const Login = () => {
                 </div>
                 {role === "student" && (
                   <input
-                    className="w-full [border:none] [outline:none] bg-ghostwhite-100 self-stretch h-[50px] rounded-31xl flex flex-row items-start justify-start py-4 px-6 box-border font-text-single-200-bold text-base text-violet-950 min-w-[250px]"
+                    className="w-[500px] [border:none] [outline:none] bg-ghostwhite-100 self-stretch h-[50px] rounded-31xl flex flex-row items-start justify-start py-4 px-6 box-border font-text-single-200-bold text-base text-violet-950 min-w-[250px]"
                     placeholder="클래스ID"
                     type="text"
                     value={classId}
@@ -123,14 +118,14 @@ const Login = () => {
                   />
                 )}
                 <input
-                  className="w-full [border:none] [outline:none] bg-ghostwhite-100 self-stretch h-[50px] rounded-31xl flex flex-row items-start justify-start py-4 px-6 box-border font-text-single-200-bold text-base text-violet-950 min-w-[250px]"
+                  className="w-[500px] [border:none] [outline:none] bg-ghostwhite-100 self-stretch h-[50px] rounded-31xl flex flex-row items-start justify-start py-4 px-6 box-border font-text-single-200-bold text-base text-violet-950 min-w-[250px]"
                   placeholder="아이디"
                   type="text"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                 />
                 <input
-                  className="w-full [border:none] [outline:none] bg-ghostwhite-100 self-stretch h-[50px] rounded-31xl flex flex-row items-start justify-start py-4 px-6 box-border font-text-single-200-bold text-base text-violet-950 min-w-[250px]"
+                  className="w-[500px] [border:none] [outline:none] bg-ghostwhite-100 self-stretch h-[50px] rounded-31xl flex flex-row items-start justify-start py-4 px-6 box-border font-text-single-200-bold text-base text-violet-950 min-w-[250px]"
                   placeholder="비밀번호"
                   type="password" // 비밀번호 필드이므로 type을 "password"로 변경
                   value={password}
@@ -157,9 +152,8 @@ const Login = () => {
               </button>
             </form>
           </div>
-        </section>
         <img
-          className="absolute top-[calc(50%_-_287.5px)] left-[calc(50%_-_1003px)] w-[1069px] h-[620px] z-[3]"
+          className="absolute top-[calc(50%_-_287.5px)] left-[calc(50%_-_1003px)] w-[1069px] h-[620px] z-[3] mq1125:hidden"
           alt=""
           src="/imagedevicemacbook.svg"
         />

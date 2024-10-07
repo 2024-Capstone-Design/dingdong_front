@@ -220,7 +220,10 @@ const ChatRoom = () => {
   const finishChat = async () => {
     if (messages.length >= 10 || isFinished) {
       if (!loading && chatroomId) {
-        if (isFinished) {
+        if (isFinished && (task.progress == 'SKETCH_END' || task.progress == 'CODING' || task.progress == 'COMPLETED')) {
+          navigate(`/sketch-result/${studentTaskId}`);
+          return;
+        } else if (isFinished) {
           navigate(`/sketch/${studentTaskId}`);
           return;
         }

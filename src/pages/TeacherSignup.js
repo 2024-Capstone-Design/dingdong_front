@@ -91,9 +91,9 @@ const TeacherSignup = () => {
   const placeholderColor = "#A0AEC0"; // 예시 색상 코드, 실제 추출된 색상으로 변경 필요
 
   return (
-    <div className="w-full relative bg-grayscale-white overflow-hidden flex flex-col items-start justify-start leading-[normal] tracking-[normal]">
+    <div className="w-full h-screen flex flex-col bg-grayscale-white overflow-hidden">
       <Header onLogoContainerClick={onLogoContainerClick} />
-      <main className="self-stretch bg-grayscale-white flex flex-col items-start justify-start box-border pt-16 pb-16 gap-[80px] min-w-[720px] max-w-[700px] text-left text-lg text-lightslategray font-text-single-200-bold mq450:gap-[32px] mq450:pl-5 mq450:pr-5 mq450:box-border mq1125:gap-[63px] mq1125:pt-[29px] mq1125:pb-[218px] mq1125:pr-[359px] mq1125:pl-[90px] mq1125:box-border mx-auto">
+      <main className="self-stretch bg-grayscale-white flex flex-col flex-grow items-start justify-center box-border pt-16 pb-16 gap-[80px] min-w-[720px] max-w-[700px] text-left text-lg text-lightslategray font-text-single-200-bold mq450:gap-[32px] mq450:pl-5 mq450:pr-5 mq450:box-border mq1125:gap-[63px] mq1125:pt-[29px] mq1125:pb-[218px] mq1125:pr-[359px] mq1125:pl-[90px] mq1125:box-border mx-auto">
         <div className="flex flex-col items-start justify-start gap-[8px]">
           <b className="relative tracking-[0.1em] leading-[20px] uppercase font-bold inline-block min-w-[78px] z-[2]">
             SIGN IN
