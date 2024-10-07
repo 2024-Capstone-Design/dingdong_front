@@ -50,6 +50,22 @@
     max-width: 230px;
     border-radius: 8px;
   }
+
+  .thumbnail-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 10px;
+  }
+  
+  .thumbnail {
+    width: fit-content; /* 썸네일 크기 조정 */
+    height: 60px;
+    margin: 5px;
+    border-radius: 8px;
+    object-fit: cover;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
   
   .character-card .placeholder {
     background-color: #eee;

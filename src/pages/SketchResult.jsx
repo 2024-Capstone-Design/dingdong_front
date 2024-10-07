@@ -174,7 +174,14 @@ const SketchResult = () => {
               <div key={character.id} className="character-card">
                 <h3>{character.name || `캐릭터 ${index + 1}`}</h3>
                 {character.imageUrls?.length > 0 ? (
-                  <img src={character.imageUrls[0]} alt={character.name || `캐릭터 ${index + 1}`} />
+                  <>
+                    <img src={character.imageUrls[0]} alt={character.name || `캐릭터 ${index + 1}`} />
+                    <div className="thumbnail-container">
+                      {character.imageUrls.slice(1).map((url, idx) => (
+                        <img key={idx} src={url} alt={`썸네일 ${idx + 1}`} className="thumbnail" />
+                      ))}
+                    </div>
+                  </>
                 ) : (
                   <div className="placeholder">생성중</div>
                 )}
