@@ -44,31 +44,30 @@ const SketchResult = () => {
       }
   };
 
-  fetchRealtimeId();
-
   const updateProgress = async () => {
-    try {
-      var new_progress = "";
-      if (completed && task.progress == "SKETCH") {
-        new_progress = "SKETCH_END";
-      } else if (completed && (task.progress == "SKETCH_END" || task.progress == "CODING")) {
-        new_progress = "CODING";
-      } else {
-        new_progress = "SKETCH";
-      }
-      if(new_progress != ""){
-        const progressUpdateResponse = await api.updateStudentTaskProgress(studentTaskId, { "progress": new_progress });
+    // 테스트를 위해 수정
+    // try {
+    //   var new_progress = "";
+    //   if (completed && task.progress == "SKETCH") {
+    //     new_progress = "SKETCH_END";
+    //   } else if (completed && (task.progress == "SKETCH_END" || task.progress == "CODING")) {
+    //     new_progress = "CODING";
+    //   } else {
+    //     new_progress = "SKETCH";
+    //   }
+    //   if(new_progress != ""){
+    //     const progressUpdateResponse = await api.updateStudentTaskProgress(studentTaskId, { "progress": new_progress });
 
-        if (progressUpdateResponse.status === 200) {
-          await api.getStudentTasks(user.student.id);
-          task = studentTaskStore.getTasks().find(task => task.studentTaskId === parseInt(studentTaskId));
-        } else {
-          alert(`Progress 업데이트에 실패했습니다. (error: ${progressUpdateResponse.status})`);
-        }
-      }
-    } catch (error) {
-      console.error('Error update progress:', error);
-    }
+    //     if (progressUpdateResponse.status === 200) {
+    //       await api.getStudentTasks(user.student.id);
+    //       task = studentTaskStore.getTasks().find(task => task.studentTaskId === parseInt(studentTaskId));
+    //     } else {
+    //       alert(`Progress 업데이트에 실패했습니다. (error: ${progressUpdateResponse.status})`);
+    //     }
+    //   }
+    // } catch (error) {
+    //   console.error('Error update progress:', error);
+    // }
   };
 
   useEffect(() => {
