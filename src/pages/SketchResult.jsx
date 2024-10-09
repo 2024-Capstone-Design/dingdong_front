@@ -7,6 +7,9 @@ import { userStore } from "../stores/UserStore";
 import { api } from "../api/index";
 import './SketchResult.css';
 
+import { ref as databaseRef, get, child } from "firebase/database";
+import { database } from '../firebase.js'; 
+
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
 
@@ -24,6 +27,24 @@ const SketchResult = () => {
   const [completed, setCompleted] = useState(false);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false); // 로딩 상태 추가
+  const [realtimeId, setRealtimeId] = useState(null);
+
+  const fetchRealtimeId = async () => {
+      const dbRef = databaseRef(database);
+      try {
+        const snapshot = await get(child(dbRef, "studentTaskId"));
+        if (snapshot.exists()) {
+          setRealtimeId(snapshot.val());
+          // console.log("realtimeId", realtimeId);
+        } else {
+          console.log("No data available for studentTaskId");
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+  };
+
+  fetchRealtimeId();
 
   const updateProgress = async () => {
     try {
@@ -51,9 +72,15 @@ const SketchResult = () => {
   };
 
   useEffect(() => {
+    fetchRealtimeId();
+  }, [studentTaskId]);
+
+  useEffect(() => {
+    const taskId = realtimeId;
     const fetchData = async () => {
+      // console.log("가져옴", taskId);
       try {
-        const response = await fetch(`https://image.ding-dong.xyz/api/v1/imagine/status/${studentTaskId}`, {
+        const response = await fetch(`https://image.ding-dong.xyz/api/v1/imagine/status/${taskId}`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -78,15 +105,16 @@ const SketchResult = () => {
         console.error('Error fetching data:', error);
       }
     };
-
-    fetchData();
-    if (!completed) {
+    if(taskId != null){
+      fetchData();
+    }
+    if (!completed && taskId != null) {
       const interval = setInterval(fetchData, 3000);
       return () => clearInterval(interval);
     } else if(!error) {
       updateProgress();
     }
-  }, [completed, studentTaskId]);
+  }, [completed, studentTaskId, realtimeId]);
 
   const handleRetry = () => {
     navigate(`/sketch/${studentTaskId}`);
@@ -122,35 +150,38 @@ const SketchResult = () => {
 
   const goToNext = async () => {
     setLoading(true); // 로딩 상태 활성화
-    const zip = new JSZip();
+    // const zip = new JSZip();
 
-    // 캐릭터 이미지 파일을 ZIP에 추가
-    for (const character of characters) {
-      for (const [index, url] of character.imageUrls.entries()) {
-        const filename = `${character.name}_${index + 1}.png`;
-        const response = await fetch(url);
-        const blob = await response.blob();
-        zip.file(`등장인물/${filename}`, blob);
-      }
-    }
+    // // 캐릭터 이미지 파일을 ZIP에 추가
+    // for (const character of characters) {
+    //   for (const [index, url] of character.imageUrls.entries()) {
+    //     const filename = `${character.name}_${index + 1}.png`;
+    //     const response = await fetch(url);
+    //     const blob = await response.blob();
+    //     zip.file(`등장인물/${filename}`, blob);
+    //   }
+    // }
 
-    // 배경 이미지 파일을 ZIP에 추가
-    for (const background of backgrounds) {
-      for (const [index, url] of background.imageUrls.entries()) {
-        const filename = `${background.name}_${index + 1}.png`;
-        const response = await fetch(url);
-        const blob = await response.blob();
-        zip.file(`배경/${filename}`, blob);
-      }
-    }
+    // // 배경 이미지 파일을 ZIP에 추가
+    // for (const background of backgrounds) {
+    //   for (const [index, url] of background.imageUrls.entries()) {
+    //     const filename = `${background.name}_${index + 1}.png`;
+    //     const response = await fetch(url);
+    //     const blob = await response.blob();
+    //     zip.file(`배경/${filename}`, blob);
+    //   }
+    // }
 
-    // ZIP 파일 생성 및 다운로드 후 추가 코드 실행
-    zip.generateAsync({ type: "blob" }).then(function (content) {
-      saveAs(content, "딩동.zip");
-      setLoading(false); // 로딩 상태 비활성화
-      updateProgress();
-      navigateToSubdomain(studentTaskId);
-    });
+    // // ZIP 파일 생성 및 다운로드 후 추가 코드 실행
+    // zip.generateAsync({ type: "blob" }).then(function (content) {
+    //   saveAs(content, "딩동.zip");
+    //   setLoading(false); // 로딩 상태 비활성화
+    //   updateProgress();
+    //   navigateToSubdomain(studentTaskId);
+    // });
+    setLoading(false); // 로딩 상태 비활성화
+    updateProgress();
+    navigateToSubdomain(studentTaskId);
   };
 
   if (error) {
@@ -186,12 +217,13 @@ const SketchResult = () => {
                   <div className="placeholder">생성중</div>
                 )}
                 {completed ? (
-                  <button
-                    className="bg-gray-500 text-white px-4 py-2 rounded mt-4 cursor-pointer font-bold"
-                    onClick={() => regenerate(character.id, 'CHARACTER')}
-                  >
-                    다시 만들어주세요
-                  </button>
+                  <></>
+                  // <button
+                  //   className="bg-gray-500 text-white px-4 py-2 rounded mt-4 cursor-pointer font-bold"
+                  //   onClick={() => regenerate(character.id, 'CHARACTER')}
+                  // >
+                  //   다시 만들어주세요
+                  // </button>
                 ) : (
                   <p>Progress: {character.progress}</p>
                 )}

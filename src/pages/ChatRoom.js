@@ -220,13 +220,18 @@ const ChatRoom = () => {
   const finishChat = async () => {
     if (messages.length >= 10 || isFinished) {
       if (!loading && chatroomId) {
-        if (isFinished && (task.progress == 'SKETCH_END' || task.progress == 'CODING' || task.progress == 'COMPLETED')) {
+        if (isFinished) {
           navigate(`/sketch-result/${studentTaskId}`);
           return;
-        } else if (isFinished) {
-          navigate(`/sketch/${studentTaskId}`);
-          return;
         }
+        // 테스트용
+        // if (isFinished && (task.progress == 'SKETCH_END' || task.progress == 'CODING' || task.progress == 'COMPLETED')) {
+        //   navigate(`/sketch-result/${studentTaskId}`);
+        //   return;
+        // } else if (isFinished) {
+        //   navigate(`/sketch/${studentTaskId}`);
+        //   return;
+        // }
         try {
           setLoading(true);  // 로딩 시작
           setMessages((prevMessages) => [...prevMessages, { sender: "bot", text: <FinishLoadingDots /> }]);

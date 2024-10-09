@@ -109,25 +109,25 @@ const StudentTaskDetail = () => {
   const clockImage = "/progress_clock.svg";
 
   const startFairy =  useCallback(() => {
-    navigate(`/chat-room/${studentTaskId}`);
+    // navigate(`/chat-room/${studentTaskId}`);
   });
 
   const startSketch =  useCallback(() => {
-    if(progress == 'SKETCH'){
-      navigate(`/sketch/${studentTaskId}`);
-    }else if(progress == 'SKETCH_END' || progress == 'CODING' || progress == 'COMPLETED'){
-      navigate(`/sketch-result/${studentTaskId}`, { state: { fairytaleId } });
-    }else{
-      alert("이전 단계를 아직 마치지 않았어요");
-    }
+    // if(progress == 'SKETCH'){
+    //   navigate(`/sketch/${studentTaskId}`);
+    // }else if(progress == 'SKETCH_END' || progress == 'CODING' || progress == 'COMPLETED'){
+    //   navigate(`/sketch-result/${studentTaskId}`, { state: { fairytaleId } });
+    // }else{
+    //   alert("이전 단계를 아직 마치지 않았어요");
+    // }
   });
 
   const startCoding =  useCallback(() => {
-    if(progress == 'SKETCH_END' || progress == 'CODING' || progress == 'COMPLETED'){
-      navigateToSubdomain(studentTaskId);
-    }else{
-      alert("이전 단계를 아직 마치지 않았어요");
-    }
+    // if(progress == 'SKETCH_END' || progress == 'CODING' || progress == 'COMPLETED'){
+    //   navigateToSubdomain(studentTaskId);
+    // }else{
+    //   alert("이전 단계를 아직 마치지 않았어요");
+    // }
   });
 
   return (
@@ -196,22 +196,22 @@ const StudentTaskDetail = () => {
         {/* Remaining Tasks Section */}
         <h2 className="text-2xl font-semibold text-gray-700 mb-4">남은 할 일</h2>
         <div className="self-stretch grid flex-row items-start justify-start py-0 pl-0 gap-[16px] grid-cols-[repeat(4,_minmax(164px,_1fr))] mq450:grid-cols-[minmax(164px,_1fr)] mq800:justify-center mq800:grid-cols-[repeat(2,_minmax(164px,_285px))]">
-          <div onClick={startFairy} className="cursor-pointer h-full bg-white p-8 rounded-lg shadow text-center flex flex-col items-center justify-center">
+          <div onClick={startFairy} className="cursor-pointer h-[150px] bg-white p-8 rounded-lg shadow text-center flex flex-col items-center justify-center">
             <img src={bookImage} alt="Book Icon" className="mb-2 h-16" />
             <h3 className="text-xl font-bold mb-2 mt-0">동화 만들기</h3>
             <p className="mt-0 mb-0">{progress === "NOT_STARTED" ? `${taskTitle}를 완료했어요!` : "동화 결말을 만들어 보세요."}</p>
           </div>
-          <div onClick={startSketch} className="cursor-pointer h-full bg-white p-8 rounded-lg shadow text-center flex flex-col items-center justify-center">
+          <div onClick={startSketch} className="cursor-pointer h-[150px] bg-white p-8 rounded-lg shadow text-center flex flex-col items-center justify-center">
             <img src={paintingImage} alt="Painting Icon" className="mb-2 h-16" />
             <h3 className="text-xl font-bold mb-2 mt-0">장면 그리기</h3>
             <p className="mt-0 mb-0">{progress === "SKETCH" ? "새로 만든 동화 속 주인공을 그리고 있습니다." : "주인공을 그려보세요."}</p>
           </div>
-          <div onClick={startCoding} className="cursor-pointer h-full bg-white p-8 rounded-lg shadow text-center flex flex-col items-center justify-center">
+          <div onClick={startCoding} className="cursor-pointer h-[150px] bg-white p-8 rounded-lg shadow text-center flex flex-col items-center justify-center">
             <img src={codingImage} alt="Coding Icon" className="mb-2 h-16" />
             <h3 className="text-xl font-bold mb-2 mt-0">애니메이션 만들기</h3>
             <p className="mt-0 mb-0">{progress === "CODING" ? "애니메이션을 코딩하고 있습니다." : "주인공을 애니메이션으로 만들어보세요."}</p>
           </div>
-          <div className="bg-white p-8 rounded-lg h-full shadow text-center flex flex-col items-center justify-center">
+          <div className="bg-white p-8 rounded-lg h-[150px] shadow text-center flex flex-col items-center justify-center">
             <img src={clockImage} alt="Clock Icon" className="mb-2 h-16" />
             <h3 className="text-xl font-bold mb-2 mt-0">예상 학습 시간</h3>
             <p className="mt-0 mb-0">{progress === "COMPLETED" ? "모든 과정을 완료했습니다!" : "학습을 완료하기 위해 30분이 더 필요해요."}</p>

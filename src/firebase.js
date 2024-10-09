@@ -1,5 +1,6 @@
 // src/firebase.js
 import { initializeApp } from 'firebase/app';
+import { getDatabase } from 'firebase/database';
 import { getStorage } from 'firebase/storage';
 
 // 환경 변수로부터 Firebase 설정 가져오기
@@ -15,5 +16,6 @@ const firebaseConfig = {
 // Firebase 초기화
 const app = initializeApp(firebaseConfig);
 const storage = getStorage(app);
+const database = getDatabase(app);
 
-export { storage };
+export { storage, database };
