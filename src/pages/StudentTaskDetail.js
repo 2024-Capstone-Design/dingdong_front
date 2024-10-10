@@ -93,7 +93,6 @@ const StudentTaskDetail = () => {
 
   useEffect(() => {
     const checkAndUpdateProgress = async () => {
-      // URL의 해시 부분을 디코딩
       const hash = window.location.hash.slice(1);
       if (hash) {
         try {
@@ -105,10 +104,12 @@ const StudentTaskDetail = () => {
               if (progressUpdateResponse.status === 200) {
                 await api.getStudentTasks(user.student.id);
                 task = studentTaskStore.getTasks().find(task => task.studentTaskId === parseInt(studentTaskId));
+                
+                // 업데이트 성공 후 페이지 새로고침
+                window.location.reload();
               } else {
                 alert(`Progress 업데이트에 실패했습니다. (error: ${progressUpdateResponse.status})`);
               }
-              // 업데이트 성공 후 필요한 작업 수행 (예: 상태 갱신, 알림 표시 등)
             } catch (error) {
               console.error('Error updating progress:', error);
             }
@@ -118,7 +119,7 @@ const StudentTaskDetail = () => {
         }
       }
     };
-
+  
     checkAndUpdateProgress();
   }, [studentTaskId]);
 
