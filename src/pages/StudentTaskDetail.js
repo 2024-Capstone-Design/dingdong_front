@@ -40,15 +40,6 @@ const StudentTaskDetail = () => {
   const { studentTaskId } = useParams();
   const [task, setTask] = useState(null);
 
-  useEffect(() => {
-    const fetchTask = () => {
-      const foundTask = studentTaskStore.getTasks().find(t => t.studentTaskId === parseInt(studentTaskId));
-      setTask(foundTask);
-    };
-
-    fetchTask();
-  }, [studentTaskId]);
-
   if (!task) {
     return <div>해당 과제를 찾을 수 없습니다.</div>;
   }
@@ -101,7 +92,10 @@ const StudentTaskDetail = () => {
   }, [navigate, progress, studentTaskId]);
 
   useEffect(() => {
+    setTask(studentTaskStore.getTasks().find(task => task.studentTaskId === parseInt(studentTaskId)));
+
     const checkAndUpdateProgress = async () => {
+      // URL의 해시 부분을 디코딩
       const hash = window.location.hash.slice(1);
       if (hash) {
         try {
@@ -111,12 +105,12 @@ const StudentTaskDetail = () => {
               const progressUpdateResponse = await api.updateStudentTaskProgress(studentTaskId, {"progress": 'COMPLETED'});
               console.log('Progress updated:', '됨됨됨');
               if (progressUpdateResponse.status === 200) {
-                await api.getStudentTasks(userStore.getUser().student.id);
-                // task 상태 업데이트
-                setTask(studentTaskStore.getTasks().find(t => t.studentTaskId === parseInt(studentTaskId)));
+                await api.getStudentTasks(user.student.id);
+                setTask(studentTaskStore.getTasks().find(task => task.studentTaskId === parseInt(studentTaskId)));
               } else {
                 alert(`Progress 업데이트에 실패했습니다. (error: ${progressUpdateResponse.status})`);
               }
+              // 업데이트 성공 후 필요한 작업 수행 (예: 상태 갱신, 알림 표시 등)
             } catch (error) {
               console.error('Error updating progress:', error);
             }
