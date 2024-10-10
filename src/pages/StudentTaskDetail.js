@@ -1,10 +1,11 @@
-import React from 'react';
-import { useCallback } from "react";
+import React, { useEffect, useCallback } from 'react';
 import { getAccessToken, getRefreshToken } from '../api/auth';
 import { useParams, useNavigate } from 'react-router-dom';
 import { studentTaskStore } from "../stores/StudentTaskStore";
 import { CODING_SITE_URL } from '../config';
 import StudentSideBar from "../components/StudentSideBar";
+import { api } from "../api/index";
+import { userStore } from "../stores/UserStore";
 
 const progressStages = {
   NOT_STARTED: {
@@ -34,9 +35,10 @@ const progressStages = {
 };
 
 const StudentTaskDetail = () => {
+  const user = userStore.getUser();
   const navigate = useNavigate();
   const { studentTaskId } = useParams();
-  const task = studentTaskStore.getTasks().find(task => task.studentTaskId === parseInt(studentTaskId));
+  var task = studentTaskStore.getTasks().find(task => task.studentTaskId === parseInt(studentTaskId));
 
   if (!task) {
     return <div>해당 과제를 찾을 수 없습니다.</div>;
@@ -88,6 +90,37 @@ const StudentTaskDetail = () => {
         break;
     }
   }, [navigate, progress, studentTaskId]);
+
+  useEffect(() => {
+    const checkAndUpdateProgress = async () => {
+      // URL의 해시 부분을 디코딩
+      const hash = window.location.hash.slice(1);
+      if (hash) {
+        try {
+          const decodedState = JSON.parse(atob(hash));
+          if (decodedState.progress === 'COMPLETED') {
+            try {
+              const progressUpdateResponse = await api.updateStudentTaskProgress(studentTaskId, {"progress": 'COMPLETED'});
+              console.log('Progress updated:', '됨됨됨');
+              if (progressUpdateResponse.status === 200) {
+                await api.getStudentTasks(user.student.id);
+                task = studentTaskStore.getTasks().find(task => task.studentTaskId === parseInt(studentTaskId));
+              } else {
+                alert(`Progress 업데이트에 실패했습니다. (error: ${progressUpdateResponse.status})`);
+              }
+              // 업데이트 성공 후 필요한 작업 수행 (예: 상태 갱신, 알림 표시 등)
+            } catch (error) {
+              console.error('Error updating progress:', error);
+            }
+          }
+        } catch (error) {
+          console.error('Error decoding state:', error);
+        }
+      }
+    };
+
+    checkAndUpdateProgress();
+  }, [studentTaskId]);
 
   const calculateDaysRemaining = (finishDate) => {
     const today = new Date();

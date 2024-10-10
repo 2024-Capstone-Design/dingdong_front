@@ -97,6 +97,7 @@ const StudentClass = observer(() => {
                     fairytaleTitle={task.fairytaleTitle}
                     fairytaleImageUrl={task.fairytaleImageUrl}
                     progress={task.progress}
+                    completed={task.completed}
                     onStoryCardsContainerClick={() => navigate(`/student-task/${task.studentTaskId}`)}
                   />
                 ))}
