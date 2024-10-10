@@ -106,7 +106,7 @@ const StudentTaskDetail = () => {
                 task = studentTaskStore.getTasks().find(task => task.studentTaskId === parseInt(studentTaskId));
                 
                 // 업데이트 성공 후 페이지 새로고침
-                window.location.reload();
+                navigate(`/student-task/${studentTaskId}`);
               } else {
                 alert(`Progress 업데이트에 실패했습니다. (error: ${progressUpdateResponse.status})`);
               }
