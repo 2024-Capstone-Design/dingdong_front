@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { getAccessToken, getRefreshToken } from '../api/auth';
 import { useParams, useNavigate } from 'react-router-dom';
 import { studentTaskStore } from "../stores/StudentTaskStore";
@@ -38,7 +38,7 @@ const StudentTaskDetail = () => {
   const user = userStore.getUser();
   const navigate = useNavigate();
   const { studentTaskId } = useParams();
-  const [task, setTask] = useState(null);
+  var task = studentTaskStore.getTasks().find(task => task.studentTaskId === parseInt(studentTaskId));
 
   if (!task) {
     return <div>해당 과제를 찾을 수 없습니다.</div>;
@@ -92,8 +92,6 @@ const StudentTaskDetail = () => {
   }, [navigate, progress, studentTaskId]);
 
   useEffect(() => {
-    setTask(studentTaskStore.getTasks().find(task => task.studentTaskId === parseInt(studentTaskId)));
-
     const checkAndUpdateProgress = async () => {
       // URL의 해시 부분을 디코딩
       const hash = window.location.hash.slice(1);
@@ -106,7 +104,7 @@ const StudentTaskDetail = () => {
               console.log('Progress updated:', '됨됨됨');
               if (progressUpdateResponse.status === 200) {
                 await api.getStudentTasks(user.student.id);
-                setTask(studentTaskStore.getTasks().find(task => task.studentTaskId === parseInt(studentTaskId)));
+                task = studentTaskStore.getTasks().find(task => task.studentTaskId === parseInt(studentTaskId));
               } else {
                 alert(`Progress 업데이트에 실패했습니다. (error: ${progressUpdateResponse.status})`);
               }
