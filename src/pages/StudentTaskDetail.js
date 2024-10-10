@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { getAccessToken, getRefreshToken } from '../api/auth';
 import { useParams, useNavigate } from 'react-router-dom';
 import { studentTaskStore } from "../stores/StudentTaskStore";
@@ -38,7 +38,24 @@ const StudentTaskDetail = () => {
   const user = userStore.getUser();
   const navigate = useNavigate();
   const { studentTaskId } = useParams();
-  var task = studentTaskStore.getTasks().find(task => task.studentTaskId === parseInt(studentTaskId));
+  const [task, setTask] = useState(null);
+
+  useEffect(() => {
+    const fetchTask = () => {
+      const foundTask = studentTaskStore.getTasks().find(t => t.studentTaskId === parseInt(studentTaskId));
+      setTask(foundTask);
+    };
+
+    fetchTask();
+
+    // studentTaskStore에 변경 이벤트 리스너 추가
+    const unsubscribe = studentTaskStore.subscribe(fetchTask);
+
+    return () => {
+      // 컴포넌트 언마운트 시 리스너 제거
+      unsubscribe();
+    };
+  }, [studentTaskId]);
 
   if (!task) {
     return <div>해당 과제를 찾을 수 없습니다.</div>;
@@ -93,7 +110,6 @@ const StudentTaskDetail = () => {
 
   useEffect(() => {
     const checkAndUpdateProgress = async () => {
-      // URL의 해시 부분을 디코딩
       const hash = window.location.hash.slice(1);
       if (hash) {
         try {
@@ -103,12 +119,12 @@ const StudentTaskDetail = () => {
               const progressUpdateResponse = await api.updateStudentTaskProgress(studentTaskId, {"progress": 'COMPLETED'});
               console.log('Progress updated:', '됨됨됨');
               if (progressUpdateResponse.status === 200) {
-                await api.getStudentTasks(user.student.id);
-                task = studentTaskStore.getTasks().find(task => task.studentTaskId === parseInt(studentTaskId));
+                await api.getStudentTasks(userStore.getUser().student.id);
+                // task 상태 업데이트
+                setTask(studentTaskStore.getTasks().find(t => t.studentTaskId === parseInt(studentTaskId)));
               } else {
                 alert(`Progress 업데이트에 실패했습니다. (error: ${progressUpdateResponse.status})`);
               }
-              // 업데이트 성공 후 필요한 작업 수행 (예: 상태 갱신, 알림 표시 등)
             } catch (error) {
               console.error('Error updating progress:', error);
             }
