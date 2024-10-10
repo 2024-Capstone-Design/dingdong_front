@@ -3,6 +3,7 @@ import { makeAutoObservable } from "mobx";
 
 class StudentTaskStore {
   tasks = JSON.parse(localStorage.getItem("st_tasks")) || [];
+  listeners = [];
 
   constructor() {
     makeAutoObservable(this);
@@ -11,6 +12,7 @@ class StudentTaskStore {
   setTasks(tasks) {
     this.tasks = tasks;
     localStorage.setItem("st_tasks", JSON.stringify(tasks));
+    this.notifyListeners();
   }
 
   getTasks() {
@@ -18,8 +20,20 @@ class StudentTaskStore {
   }
 
   clearTasks() {
-    this.task = [];
+    this.tasks = [];
     localStorage.removeItem("st_tasks");
+    this.notifyListeners();
+  }
+
+  subscribe(listener) {
+    this.listeners.push(listener);
+    return () => {
+      this.listeners = this.listeners.filter(l => l !== listener);
+    };
+  }
+
+  notifyListeners() {
+    this.listeners.forEach(listener => listener());
   }
 }
 
