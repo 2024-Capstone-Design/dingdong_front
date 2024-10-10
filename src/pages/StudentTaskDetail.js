@@ -156,11 +156,11 @@ const StudentTaskDetail = () => {
   });
 
   const startCoding =  useCallback(() => {
-    // if(progress == 'SKETCH_END' || progress == 'CODING' || progress == 'COMPLETED'){
-    //   navigateToSubdomain(studentTaskId);
-    // }else{
-    //   alert("이전 단계를 아직 마치지 않았어요");
-    // }
+    if(progress == 'SKETCH_END' || progress == 'CODING' || progress == 'COMPLETED'){
+      navigateToSubdomain(studentTaskId);
+    }else{
+      alert("이전 단계를 아직 마치지 않았어요");
+    }
   });
 
   return (
