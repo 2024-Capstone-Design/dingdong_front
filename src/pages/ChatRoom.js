@@ -12,13 +12,13 @@ const ChatRoom = () => {
   const user = userStore.getUser();
 
   const { studentTaskId } = useParams();  // useParams를 사용해 studentTaskId를 가져옴
-  var task = studentTaskStore.getTasks().find(task => task.studentTaskId === parseInt(studentTaskId));
+  var task = studentTaskStore.getTasks().find(task => task.id === parseInt(studentTaskId));
 
   const [chatroomId, setChatroomId] = useState(null);  // chatroomId를 상태로 관리
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const [loading, setLoading] = useState(false);  // 로딩 상태 관리
-  const [isFinished, setIsFinished] = useState(false);
+  const [isFinished, setIsFinished] = useState(true);
   const [words, setWords] = useState([]);
   const [filteredWords, setFilteredWords] = useState([]); // 자동완성 추천 단어 목록
   const messagesEndRef = useRef(null);
@@ -103,13 +103,13 @@ const ChatRoom = () => {
     fetchChatroomId();
   }, [studentTaskId, task]);
 
-  useEffect(() => {
-    if (task && (task.progress === "NOT_STARTED" || task.progress === "CHAT")) {
-      setIsFinished(false);
-    } else {
-      setIsFinished(true);
-    }
-  }, [task]);
+  // useEffect(() => {
+  //   if (task && (task.progress === "NOT_STARTED" || task.progress === "CHAT")) {
+  //     setIsFinished(false);
+  //   } else {
+  //     setIsFinished(true);
+  //   }
+  // }, [task]);
 
   useEffect(() => {
     if (isFinished) {
@@ -136,21 +136,21 @@ const ChatRoom = () => {
           setMessages(transformedMessages);
         } else {
           try {
-            setLoading(true);  // 로딩 시작
-            setMessages((prevMessages) => [...prevMessages, { sender: "bot", text: <StartLoadingDots /> }]);
-            const response = await axios.post(`${FAST_API_BASE_URL}/chat/v1/gpt`, {
-              is_first: true,
-              fairy_id: task.fairytaleId,
-              chat_room_id: chatroomId,
-              user_msg: '',
-              q_type: task.questionType,
-            });
-            setMessages((prevMessages) => {
-              const updatedMessages = [...prevMessages];
-              updatedMessages[updatedMessages.length - 1] = { sender: "bot", text: response.data.question };
-              setWords(response.data.words);
-              return updatedMessages;
-            });
+            // setLoading(true);  // 로딩 시작
+            // setMessages((prevMessages) => [...prevMessages, { sender: "bot", text: <StartLoadingDots /> }]);
+            // const response = await axios.post(`${FAST_API_BASE_URL}/chat/v1/gpt`, {
+            //   is_first: true,
+            //   fairy_id: task.fairytaleId,
+            //   chat_room_id: chatroomId,
+            //   user_msg: '',
+            //   q_type: task.questionType,
+            // });
+            // setMessages((prevMessages) => {
+            //   const updatedMessages = [...prevMessages];
+            //   updatedMessages[updatedMessages.length - 1] = { sender: "bot", text: response.data.question };
+            //   setWords(response.data.words);
+            //   return updatedMessages;
+            // });
           } catch (error) {
             console.error("Failed to fetch messages:", error);
           } finally {
@@ -161,16 +161,16 @@ const ChatRoom = () => {
         console.error("Failed to fetch messages:", error);
       } finally {
         setLoading(false);  // 로딩 종료
-        if(task.progress == "NOT_STARTED"){
-          const progressUpdateResponse = await api.updateStudentTaskProgress(studentTaskId, {"progress":'CHAT'});
+        // if(task.progress == "NOT_STARTED"){
+        //   const progressUpdateResponse = await api.updateStudentTaskProgress(studentTaskId, {"progress":'CHAT'});
     
-          if (progressUpdateResponse.status === 200) {
-            await api.getStudentTasks(user.student.id);
-            task = studentTaskStore.getTasks().find(task => task.studentTaskId === parseInt(studentTaskId));
-          } else {
-            alert(`Progress 업데이트에 실패했습니다. (error: ${progressUpdateResponse.status})`);
-          }
-        }
+        //   if (progressUpdateResponse.status === 200) {
+        //     await api.getStudentTasks(user.student.id);
+        //     task = studentTaskStore.getTasks().find(task => task.studentTaskId === parseInt(studentTaskId));
+        //   } else {
+        //     alert(`Progress 업데이트에 실패했습니다. (error: ${progressUpdateResponse.status})`);
+        //   }
+        // }
       }
     };
 
@@ -182,39 +182,39 @@ const ChatRoom = () => {
   }, [messages]);
 
   const handleSendMessage = async () => {
-    if (!loading && chatroomId) {
-      console.log("message", newMessage.trim().length);
-      if (newMessage.trim().length > 3) {
-        try {
-          setMessages((prevMessages) => [...prevMessages, { sender: "user", text: newMessage }]);
-          setNewMessage("");
-          setLoading(true);  // 로딩 시작
-          setMessages((prevMessages) => [...prevMessages, { sender: "bot", text: <LoadingDots /> }]);
+    // if (!loading && chatroomId) {
+    //   console.log("message", newMessage.trim().length);
+    //   if (newMessage.trim().length > 3) {
+    //     try {
+    //       setMessages((prevMessages) => [...prevMessages, { sender: "user", text: newMessage }]);
+    //       setNewMessage("");
+    //       setLoading(true);  // 로딩 시작
+    //       setMessages((prevMessages) => [...prevMessages, { sender: "bot", text: <LoadingDots /> }]);
 
-          const response = await axios.post(`${FAST_API_BASE_URL}/chat/v1/gpt`, {
-            is_first: false,
-            fairy_id: task.fairytaleId,
-            chat_room_id: chatroomId,
-            user_msg: newMessage,
-            q_type: task.questionType,
-          });
+    //       const response = await axios.post(`${FAST_API_BASE_URL}/chat/v1/gpt`, {
+    //         is_first: false,
+    //         fairy_id: task.fairytaleId,
+    //         chat_room_id: chatroomId,
+    //         user_msg: newMessage,
+    //         q_type: task.questionType,
+    //       });
 
-          setMessages((prevMessages) => {
-            const updatedMessages = [...prevMessages];
-            updatedMessages[updatedMessages.length - 1] = { sender: "bot", text: response.data.question };
-            setWords(response.data.words);
-            return updatedMessages;
-          });
-        } catch (error) {
-          console.error("Failed to send message:", error);
-          alert("잠시 후에 다시 시도해주세요");
-        } finally {
-          setLoading(false);  // 로딩 종료
-        }
-      } else {
-        alert("메시지를 세글자보다 길게 입력해주세요");
-      }
-    }
+    //       setMessages((prevMessages) => {
+    //         const updatedMessages = [...prevMessages];
+    //         updatedMessages[updatedMessages.length - 1] = { sender: "bot", text: response.data.question };
+    //         setWords(response.data.words);
+    //         return updatedMessages;
+    //       });
+    //     } catch (error) {
+    //       console.error("Failed to send message:", error);
+    //       alert("잠시 후에 다시 시도해주세요");
+    //     } finally {
+    //       setLoading(false);  // 로딩 종료
+    //     }
+    //   } else {
+    //     alert("메시지를 세글자보다 길게 입력해주세요");
+    //   }
+    // }
   };
 
   const finishChat = async () => {
@@ -232,41 +232,41 @@ const ChatRoom = () => {
         //   navigate(`/sketch/${studentTaskId}`);
         //   return;
         // }
-        try {
-          setLoading(true);  // 로딩 시작
-          setMessages((prevMessages) => [...prevMessages, { sender: "bot", text: <FinishLoadingDots /> }]);
+        // try {
+        //   setLoading(true);  // 로딩 시작
+        //   setMessages((prevMessages) => [...prevMessages, { sender: "bot", text: <FinishLoadingDots /> }]);
           
-          const response = await axios.post(`${FAST_API_BASE_URL}/chat/v1/gpt/summary`, {
-            fairy_id: task.fairytaleId,
-            chat_room_id: chatroomId,
-            q_type: task.questionType,
-          });
+        //   const response = await axios.post(`${FAST_API_BASE_URL}/chat/v1/gpt/summary`, {
+        //     fairy_id: task.fairytaleId,
+        //     chat_room_id: chatroomId,
+        //     q_type: task.questionType,
+        //   });
     
-          const progressUpdateResponse = await api.updateStudentTaskProgress(studentTaskId, {"progress":'SKETCH'});
+        //   const progressUpdateResponse = await api.updateStudentTaskProgress(studentTaskId, {"progress":'SKETCH'});
     
-          if (progressUpdateResponse.status === 200) {
-            await api.getStudentTasks(user.student.id);
-            task = studentTaskStore.getTasks().find(task => task.studentTaskId === parseInt(studentTaskId));
-          } else {
-            alert(`Progress 업데이트에 실패했습니다. (error: ${progressUpdateResponse.status})`);
-          }
+        //   if (progressUpdateResponse.status === 200) {
+        //     await api.getStudentTasks(user.student.id);
+        //     task = studentTaskStore.getTasks().find(task => task.studentTaskId === parseInt(studentTaskId));
+        //   } else {
+        //     alert(`Progress 업데이트에 실패했습니다. (error: ${progressUpdateResponse.status})`);
+        //   }
     
-          await axios.post(`${FAST_API_BASE_URL}/chat/v1/gpt/coding`, {
-            fairy_id: task.fairytaleId,
-            chat_room_id: chatroomId,
-            q_type: task.questionType,
-          });
+        //   await axios.post(`${FAST_API_BASE_URL}/chat/v1/gpt/coding`, {
+        //     fairy_id: task.fairytaleId,
+        //     chat_room_id: chatroomId,
+        //     q_type: task.questionType,
+        //   });
   
-          setMessages((prevMessages) => {
-            const updatedMessages = [...prevMessages];
-            updatedMessages[updatedMessages.length - 1] = { sender: "bot", text: response.data.summary };
-            return updatedMessages;
-          });
-        } catch (error) {
-          console.error("Failed to send message:", error);
-        } finally {
-          setLoading(false);  // 로딩 종료
-        }
+        //   setMessages((prevMessages) => {
+        //     const updatedMessages = [...prevMessages];
+        //     updatedMessages[updatedMessages.length - 1] = { sender: "bot", text: response.data.summary };
+        //     return updatedMessages;
+        //   });
+        // } catch (error) {
+        //   console.error("Failed to send message:", error);
+        // } finally {
+        //   setLoading(false);  // 로딩 종료
+        // }
       }
     } else {
       alert('다섯 번보다 많이 대화를 나눠야해요');
@@ -279,7 +279,7 @@ const ChatRoom = () => {
     <div className="w-full flex bg-ghostwhite h-screen">
       <LeftBar 
         finishChat={finishChat} 
-        fairytaleId={task.fairytaleId} 
+        fairytaleId={task.id > 100 ? 2 : 11} 
         messagesLength={messages.length} 
         isFinished={isFinished} 
       />

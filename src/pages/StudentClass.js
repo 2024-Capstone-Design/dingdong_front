@@ -4,6 +4,7 @@ import StudentSideBar from "../components/StudentSideBar";
 import { useNavigate } from "react-router-dom";
 import StoryCards from "../components/StoryCards";
 import { userStore } from "../stores/UserStore";
+import { CODING_SITE_URL } from '../config';
 import { studentTaskStore } from "../stores/StudentTaskStore";
 import { observer } from 'mobx-react-lite';
 import { api } from "../api/index";
@@ -23,9 +24,26 @@ const StudentClass = observer(() => {
     }
 
     if (tasks.length === 0 && getAccessToken()) {
-      api.getStudentTasks(user.student.id);
+      // api.getStudentTasks(user.student.id);
+      api.getAllTask();
     }
   }, [user, tasks]);
+
+  const navigateToSubdomain = (studentTaskId) => {
+    // State를 객체로 구성
+    const state = {
+      studentTaskId
+    };
+  
+    // State를 Base64로 인코딩
+    const encodedState = btoa(JSON.stringify(state));
+  
+    // 새 URL 구성 (서브도메인 포함)
+    const newUrl = `${CODING_SITE_URL}#${encodedState}`;
+  
+    // 새 URL로 리다이렉트
+    window.location.href = newUrl;
+  };
 
   return (
     <div className="w-full relative bg-ghostwhite-200 overflow-hidden flex flex-row flex-wrap items-start justify-start gap-[22px] leading-[normal] tracking-[normal] text-center text-base-5 text-light-secondary1 font-inter">
@@ -50,55 +68,25 @@ const StudentClass = observer(() => {
             </div>
           </div>
 
-          {/* 진행 중인 동화 리스트 */}
-          <div className="self-stretch flex flex-col items-start justify-start pt-0 px-0 pb-6 box-border gap-[12px] max-w-full">
-            <div className="self-stretch flex flex-row items-start justify-start py-0 pr-1.5 pl-[3px] box-border max-w-full">
-              <div className="flex-1 flex flex-row items-start justify-between max-w-full gap-[20px] mq450:flex-wrap">
-                <h1 className="m-0 relative text-inherit font-semibold font-inherit inline-block min-w-[120px] mq450:text-base">
-                  진행 중인 동화
-                </h1>
-              </div>
-            </div>
-            <div className="self-stretch grid flex-row items-start justify-start py-0 pr-[31px] pl-0 gap-[24px] grid-cols-[repeat(5,_minmax(164px,_1fr))] mq450:grid-cols-[minmax(164px,_1fr)] mq800:justify-center mq800:grid-cols-[repeat(2,_minmax(164px,_285px))]">
-              {tasks
-                .filter(task => !task.completed)  // 진행 중인 동화만 필터링
-                .slice()
-                .sort((a, b) => new Date(a.finishDate) - new Date(b.finishDate)) // finishDate 기준으로 정렬
-                .map(task => (
-                  <StoryCards
-                    key={task.studentTaskId}
-                    fairytaleTitle={task.fairytaleTitle}
-                    fairytaleImageUrl={task.fairytaleImageUrl}
-                    progress={task.progress}
-                    completed={task.completed}
-                    onStoryCardsContainerClick={() => navigate(`/student-task/${task.studentTaskId}`)}
-                  />
-                ))}
-            </div>
-          </div>
-
           {/* 완료한 이야기 */}
           <div className="self-stretch flex flex-col items-start justify-start pt-0 px-0 pb-6 box-border gap-[12px] max-w-full">
             <div className="self-stretch flex flex-row items-start justify-start py-0 pr-1.5 pl-[3px] box-border max-w-full">
               <div className="flex-1 flex flex-row items-start justify-between max-w-full gap-[20px] mq450:flex-wrap">
                 <h1 className="m-0 relative text-inherit font-semibold font-inherit inline-block min-w-[120px] mq450:text-base">
-                  완료한 이야기
+                  선녀와 나무꾼
                 </h1>
               </div>
             </div>
             <div className="self-stretch grid flex-row items-start justify-start py-0 pr-[31px] pl-0 gap-[24px] grid-cols-[repeat(5,_minmax(164px,_1fr))] mq450:grid-cols-[minmax(164px,_1fr)] mq800:justify-center mq800:grid-cols-[repeat(2,_minmax(164px,_285px))]">
               {tasks
-                .filter(task => task.completed)  // 완료한 이야기만 필터링
-                .slice()
-                .sort((a, b) => new Date(a.finishDate) - new Date(b.finishDate))  // finishDate 기준으로 정렬
+                .filter(task => task.id > 100)
+                .filter(task => !task.studentName.includes('핑')) 
+                .sort((a, b) => a.studentName.localeCompare(b.studentName))
                 .map(task => (
                   <StoryCards
-                    key={task.studentTaskId}
-                    fairytaleTitle={task.fairytaleTitle}
-                    fairytaleImageUrl={task.fairytaleImageUrl}
-                    progress={task.progress}
-                    completed={task.completed}
-                    onStoryCardsContainerClick={() => navigate(`/student-task/${task.studentTaskId}`)}
+                    key={task.id}
+                    studentName={task.studentName}
+                    onStoryCardsContainerClick={() => navigateToSubdomain(task.id)}
                   />
                 ))}
             </div>

@@ -100,9 +100,10 @@ const StudentTaskDetail = () => {
           if (decodedState.progress === 'COMPLETED') {
             try {
               const progressUpdateResponse = await api.updateStudentTaskProgress(studentTaskId, {"progress": 'COMPLETED'});
-              console.log('Progress updated:', '됨됨됨');
+              // console.log('Progress updated:', '됨됨됨');
               if (progressUpdateResponse.status === 200) {
-                await api.getStudentTasks(user.student.id);
+                // await api.getStudentTasks(user.student.id);
+                api.getAllTask();
                 task = studentTaskStore.getTasks().find(task => task.studentTaskId === parseInt(studentTaskId));
                 
                 // 업데이트 성공 후 페이지 새로고침
