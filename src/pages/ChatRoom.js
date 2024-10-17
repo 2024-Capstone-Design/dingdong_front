@@ -224,14 +224,13 @@ const ChatRoom = () => {
           navigate(`/sketch-result/${studentTaskId}`);
           return;
         }
-        // 테스트용
-        // if (isFinished && (task.progress == 'SKETCH_END' || task.progress == 'CODING' || task.progress == 'COMPLETED')) {
-        //   navigate(`/sketch-result/${studentTaskId}`);
-        //   return;
-        // } else if (isFinished) {
-        //   navigate(`/sketch/${studentTaskId}`);
-        //   return;
-        // }
+        if (isFinished && (task.progress == 'SKETCH_END' || task.progress == 'CODING' || task.progress == 'COMPLETED')) {
+          navigate(`/sketch-result/${studentTaskId}`);
+          return;
+        } else if (isFinished) {
+          navigate(`/sketch/${studentTaskId}`);
+          return;
+        }
         try {
           setLoading(true);  // 로딩 시작
           setMessages((prevMessages) => [...prevMessages, { sender: "bot", text: <FinishLoadingDots /> }]);
@@ -263,7 +262,7 @@ const ChatRoom = () => {
             return updatedMessages;
           });
         } catch (error) {
-          console.error("Failed to send message:", error);
+          console.error("Failed to finish chat:", error);
         } finally {
           setLoading(false);  // 로딩 종료
         }
