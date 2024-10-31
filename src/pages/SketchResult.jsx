@@ -223,13 +223,13 @@ const SketchResult = () => {
                   <div className="placeholder">생성중</div>
                 )}
                 {completed ? (
-                  <></>
-                  // <button
-                  //   className="bg-gray-500 text-white px-4 py-2 rounded mt-4 cursor-pointer font-bold"
-                  //   onClick={() => regenerate(character.id, 'CHARACTER')}
-                  // >
-                  //   다시 만들어주세요
-                  // </button>
+                  // <></>
+                  <button
+                    className="bg-gray-500 text-white px-4 py-2 rounded mt-4 cursor-pointer font-bold"
+                    onClick={() => regenerate(character.id, 'CHARACTER')}
+                  >
+                    다시 만들어주세요
+                  </button>
                 ) : (
                   <p>Progress: {character.progress}</p>
                 )}
