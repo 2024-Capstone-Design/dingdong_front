@@ -13,7 +13,6 @@ const ChatRoom = () => {
 
   const { studentTaskId } = useParams();  // useParams를 사용해 studentTaskId를 가져옴
   var task = studentTaskStore.getTasks().find(task => task.studentTaskId === parseInt(studentTaskId));
-
   const [chatroomId, setChatroomId] = useState(null);  // chatroomId를 상태로 관리
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
@@ -220,16 +219,19 @@ const ChatRoom = () => {
   const finishChat = async () => {
     if (messages.length >= 10 || isFinished) {
       if (!loading && chatroomId) {
-        if (isFinished) {
-          navigate(`/sketch-result/${studentTaskId}`);
-          return;
-        }
         if (isFinished && (task.progress == 'SKETCH_END' || task.progress == 'CODING' || task.progress == 'COMPLETED')) {
           navigate(`/sketch-result/${studentTaskId}`);
           return;
         } else if (isFinished) {
-          navigate(`/sketch/${studentTaskId}`);
-          return;
+          if(task.fairytaleId==11){
+            navigate(`/sketch-pad/${studentTaskId}`);
+            return;
+          }
+          else{
+            navigate(`/sketch/${studentTaskId}`);
+            return;
+          }
+          
         }
         try {
           setLoading(true);  // 로딩 시작

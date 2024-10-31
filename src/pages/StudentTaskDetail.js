@@ -74,8 +74,14 @@ const StudentTaskDetail = () => {
         navigate(`/chat-room/${studentTaskId}`);
         break;
       case "SKETCH":
-        navigate(`/sketch/${studentTaskId}`);
-        break;
+        if(fairytaleId==11){
+          navigate(`/sketch-pad/${studentTaskId}`);
+          break;
+        }else{
+          navigate(`/sketch/${studentTaskId}`);
+          break;
+        }
+        
       case "SKETCH_END":
         navigateToSubdomain(studentTaskId);
         break;
@@ -143,17 +149,21 @@ const StudentTaskDetail = () => {
   const clockImage = "/progress_clock.svg";
 
   const startFairy =  useCallback(() => {
-    // navigate(`/chat-room/${studentTaskId}`);
+    navigate(`/chat-room/${studentTaskId}`);
   });
 
   const startSketch =  useCallback(() => {
-    // if(progress == 'SKETCH'){
-    //   navigate(`/sketch/${studentTaskId}`);
-    // }else if(progress == 'SKETCH_END' || progress == 'CODING' || progress == 'COMPLETED'){
-    //   navigate(`/sketch-result/${studentTaskId}`, { state: { fairytaleId } });
-    // }else{
-    //   alert("이전 단계를 아직 마치지 않았어요");
-    // }
+    if(progress == 'SKETCH'){
+      if(fairytaleId==11){
+        navigate(`/sketch-pad/${studentTaskId}`);
+      }else{
+        navigate(`/sketch/${studentTaskId}`);
+      }
+    }else if(progress == 'SKETCH_END' || progress == 'CODING' || progress == 'COMPLETED'){
+      navigate(`/sketch-result/${studentTaskId}`, { state: { fairytaleId } });
+    }else{
+      alert("이전 단계를 아직 마치지 않았어요");
+    }
   });
 
   const startCoding =  useCallback(() => {

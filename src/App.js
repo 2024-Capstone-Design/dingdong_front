@@ -11,6 +11,7 @@ import StudentSetting from "./pages/StudentSetting";
 import TeacherSetting from "./pages/TeacherSetting";
 import ChatRoom from "./pages/ChatRoom";
 import Sketch from "./pages/Sketch";
+import SketchPad from "./pages/Sketch_before";
 import StudentTaskDetail from "./pages/StudentTaskDetail";
 import SketchResult from "./pages/SketchResult"; // Import SketchResult page
 
@@ -60,6 +61,10 @@ function App() {
         break;
       case "/sketch":
         title = "Sketch";
+        metaDescription = "Select and create sketches";
+        break;
+      case "/sketch-pad":
+        title = "Sketch";
         metaDescription = "Draw and create sketches";
         break;
       case "/sketch-result":
@@ -106,7 +111,7 @@ function App() {
       <Route path="/" element={<Home />} />
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
-      <Route path="/teacher-signup" element={<TeacherSignup />} />
+      {/* <Route path="/teacher-signup" element={<TeacherSignup />} /> */}
       <Route path="/student-main" element={<StudentMain />} />
       <Route path="/student-classroom" element={<StudentClass />} />
       {/* <Route path="/teacher-main" element={<TeacherMain />} /> */}
@@ -114,6 +119,7 @@ function App() {
       {/* <Route path="/teacher-setting" element={<TeacherSetting />} /> */}
       <Route path="/chat-room/:studentTaskId" element={<ChatRoom />} />
       <Route path="/sketch/:studentTaskId" element={<Sketch />} />
+      <Route path="/sketch-pad/:studentTaskId" element={<SketchPad />} />
       <Route path="/sketch-result/:studentTaskId" element={<SketchResult />} /> {/* Add sketch-result route */}
       <Route path="/student-task/:studentTaskId" element={<StudentTaskDetail />} /> {/* StudentTaskDetail 경로 추가 */}
     </Routes>

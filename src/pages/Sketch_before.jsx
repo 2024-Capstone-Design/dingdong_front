@@ -162,8 +162,8 @@ const Sketch = () => {
         body: JSON.stringify({
           studentTaskId: studentTaskId,
           characters: charac,
-          backgrounds:item['1']['배경']
-          
+          backgrounds:item['1']['배경'],
+          sketchImage: url,
         })
       });
 

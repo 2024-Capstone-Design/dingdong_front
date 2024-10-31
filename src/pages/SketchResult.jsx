@@ -29,20 +29,20 @@ const SketchResult = () => {
   const [loading, setLoading] = useState(false); // 로딩 상태 추가
   const [realtimeId, setRealtimeId] = useState(null);
 
-  const fetchRealtimeId = async () => {
-      const dbRef = databaseRef(database);
-      try {
-        const snapshot = await get(child(dbRef, "studentTaskId"));
-        if (snapshot.exists()) {
-          setRealtimeId(snapshot.val());
-          // console.log("realtimeId", realtimeId);
-        } else {
-          console.log("No data available for studentTaskId");
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-  };
+  // const fetchRealtimeId = async () => {
+  //     const dbRef = databaseRef(database);
+  //     try {
+  //       const snapshot = await get(child(dbRef, "studentTaskId"));
+  //       if (snapshot.exists()) {
+  //         setRealtimeId(snapshot.val());
+  //         // console.log("realtimeId", realtimeId);
+  //       } else {
+  //         console.log("No data available for studentTaskId");
+  //       }
+  //     } catch (error) {
+  //       console.error("Error fetching data:", error);
+  //     }
+  // };
 
   const updateProgress = async () => {
     // 테스트를 위해 수정
@@ -70,12 +70,12 @@ const SketchResult = () => {
     }
   };
 
-  useEffect(() => {
-    fetchRealtimeId();
-  }, [studentTaskId]);
+  // useEffect(() => {
+  //   fetchRealtimeId();
+  // }, [studentTaskId]);
 
   useEffect(() => {
-    const taskId = realtimeId;
+    const taskId = studentTaskId;
     const fetchData = async () => {
       // console.log("가져옴", taskId);
       try {
@@ -116,7 +116,13 @@ const SketchResult = () => {
   }, [completed, studentTaskId, realtimeId]);
 
   const handleRetry = () => {
-    navigate(`/sketch/${studentTaskId}`);
+    if(task.fairytaleId==11){
+      navigate(`/sketch-pad/${studentTaskId}`);
+    }
+    else{
+      navigate(`/sketch/${studentTaskId}`);
+    }
+    
   };
 
   const regenerate = async (imageId, promptType) => {
