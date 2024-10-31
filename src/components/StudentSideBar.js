@@ -65,10 +65,10 @@ const StudentSideBar = () => {
                 ...isActive && highlightStyle,
             })}
             >
-            <div className="self-stretch flex flex-col items-center justify-center py-[17px] pl-16 pr-4">
+            <div className="self-stretch flex flex-col items-center justify-center py-[17px] pl-12 pr-2">
                 <HomeIcon fill={location.pathname === '/student-main' ? activeColor : inactiveColor} />
             </div>
-            <b className="relative font-bold inline-block min-w-[19px] z-[2] mq450:text-base" style={{ color: location.pathname === '/student-main' ? activeColor : inactiveColor }}>홈</b>
+            <b className="relative font-bold inline-block min-w-[19px] z-[2] mq450:text-base" style={{ color: location.pathname === '/student-main' ? activeColor : inactiveColor }}>토끼와 거북이</b>
         </NavLink>
 
         <NavLink 
@@ -79,10 +79,10 @@ const StudentSideBar = () => {
                 ...((isActive || isClassroomActive) && highlightStyle),
             })}
             >
-            <div className="self-stretch flex flex-col items-center justify-center py-[17px] pl-16 pr-4">
+            <div className="self-stretch flex flex-col items-center justify-center py-[17px] pl-12 pr-2">
                 <ClassroomIcon fill={isClassroomActive ? activeColor : inactiveColor} />
             </div>
-            <b className="relative font-bold inline-block min-w-[61px] z-[2] mq450:text-base" style={{ color: isClassroomActive ? activeColor : inactiveColor }}>내 교실</b>
+            <b className="relative font-bold inline-block min-w-[61px] z-[2] mq450:text-base" style={{ color: isClassroomActive ? activeColor : inactiveColor }}>선녀와 나무꾼</b>
         </NavLink>
 
         {/* <NavLink 

@@ -81,7 +81,7 @@ const LeftBar = ({ className = "", finishChat, fairytaleId, messagesLength, isFi
               그만할래요
             </b>
           </button>
-          <button onClick={finishChat} className={`cursor-pointer [border:none] py-3 px-[73px] ${messagesLength >= 10 ? 'bg-corporate-purple' : 'bg-stone-300'} border-[1px] border-solid border-corporate-purple self-stretch rounded-lg flex flex-row items-start justify-start gap-[8px] z-[1]`}>
+          <button className={`cursor-pointer [border:none] py-3 px-[73px] ${messagesLength >= 10 ? 'bg-corporate-purple' : 'bg-stone-300'} border-[1px] border-solid border-corporate-purple self-stretch rounded-lg flex flex-row items-start justify-start gap-[8px] z-[1]`}>
             <b className="w-[67px] relative text-lg leading-[24px] font-bold font-base-body text-grayscale-white text-center inline-block min-w-[67px]">
               {isFinished ? "다음단계" : "다했어요"}
             </b>
