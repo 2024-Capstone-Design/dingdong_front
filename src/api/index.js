@@ -16,6 +16,7 @@ const api = {
     }
 
     const response = await fetch(url, options);
+    
 
     if (response.status === 401 && !options._retry) {
       options._retry = true;
@@ -34,6 +35,37 @@ const api = {
     return response;
   },
 
+  async getAllTask() {
+    // 두 개의 API 호출
+    const response1 = await this.fetchWithAuth(`${API_BASE_URL}/api/v1/task/16`);
+    const response2 = await this.fetchWithAuth(`${API_BASE_URL}/api/v1/task/19`);
+  
+    if (!response1.ok) {
+      alert(`잠시 후 다시 시도해주세요 (error: ${response1.status}-gat)`);
+      return;
+    }
+  
+    if (!response2.ok) {
+      alert(`잠시 후 다시 시도해주세요 (error: ${response2.status}-gat)`);
+      return;
+    }
+  
+    // JSON 형식으로 변환
+    const responseData1 = await response1.json();
+    const responseData2 = await response2.json();
+  
+    // 두 responseData의 studentTask 배열을 병합
+    const allTasks = [
+      ...responseData1.data.studentTask,
+      ...responseData2.data.studentTask
+    ];
+  
+    // studentTaskStore에 병합된 데이터를 저장
+    studentTaskStore.setTasks(allTasks);
+  
+    return allTasks;  // 병합된 결과를 반환
+  },
+
   async studentLogin(data) {
     const response = await fetch(`${API_BASE_URL}/api/v1/student/login`, {
       method: 'POST',
@@ -48,7 +80,8 @@ const api = {
       setTokens(responseData.data.accessToken, responseData.data.refreshToken);
       // console.log("토큰", getAccessToken());
       const userData = await this.getCurrentUser()
-      const taskData = await this.getStudentTasks(userData.data.student.id);
+      // const taskData = await this.getStudentTasks(userData.data.student.id);
+      const taskData = await this.getAllTask();
     } else {
       alert(`아이디와 비밀번호를 확인해주세요`);
     }
